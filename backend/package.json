@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js",
+    "dev": "nodemon --watch src --legacy-watch src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -11,7 +13,11 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.16.3",
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "prisma": "^6.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

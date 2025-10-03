@@ -14,7 +14,69 @@ datasource db {
 }
 
 model User {
-  id Int  @id @default(autoincrement())
-  name String
-  email String
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  password      String
+  role          Role          @default(User)
+  status        Boolean       @default(false) // ควรเปลี่ยนเป็น is_verrified
+
+  user_profile  UserProfile?
+  owned_pets    Pet[]         @relation("owner_pet")
+  announed_pets Pet[]         @relation("announcer_pet")
+}
+
+model UserProfile {
+  user_id       Int           @id @default(autoincrement())
+  user          User          @relation(fields: [user_id], references: [id])
+  first_name    String
+  last_name     String
+  phone_number  String
+  facebook      String
+  image_url     String?
+}
+
+model Pet {
+  id            Int           @id @default(autoincrement())
+  owner_id      Int
+  owner         User          @relation("owner_pet" ,fields: [owner_id], references: [id])
+  annoucer_id   Int
+  annoucer      User          @relation("announcer_pet", fields: [annoucer_id], references: [id])
+
+  image         PetImage[]
+  profile       PetProfile?
+}
+
+model PetImage {
+  pet_id        Int           @id
+  pet           Pet           @relation(fields: [pet_id], references: [id])
+  image_url     String
+}
+
+model PetProfile {
+  pet_id        Int           @id
+  pet           Pet           @relation(fields: [pet_id], references: [id])
+  name          String
+  description   String
+  location      String
+  pet_type      PetType
+  gender        String
+  age           Int
+  weight        Float
+  vaccinated    Boolean
+  sterilized    Boolean
+  dicease       String?
+}
+
+enum Role {
+  User
+  Admin
+}
+
+enum PetType {
+  Dog
+  Cat
+  Bird
+  Hamster
+  Lizard
+  Rabbit
 }
