@@ -1,7 +1,7 @@
 
 const express = require("express");
 const userRoutes = require("./routes/authRoutes");
-
+const testRoutes = require("./routes/testRoutes")
 const app = express();
 
 
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 
 // REST API
 app.use("/auth", userRoutes);
-
+app.use("/test", testRoutes)
 
 //start server
 const PORT = process.env.PORT || 4000;
