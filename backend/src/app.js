@@ -1,13 +1,20 @@
+require('dotenv').config();
 
 const express = require("express");
-const userRoutes = require("./routes/authRoutes");
-const testRoutes = require("./routes/testRoutes")
+
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes")
+const petRoutes = require("./routes/petRoutes")
+const requestRoutes = require("./routes/requestRoutes")
+const cookieParser = require('cookie-parser')
+
 const app = express();
 
+// before upload image is here
 
 //json
 app.use(express.json());
-
+app.use(cookieParser())
 //cors ต้องแก้ตอนลง production
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -18,9 +25,10 @@ app.use((req, res, next) => {
 });
 
 // REST API
-app.use("/auth", userRoutes);
-app.use("/test", testRoutes)
-
+app.use("/api", authRoutes);
+app.use("/api", userRoutes);
+app.use("/api", petRoutes);
+app.use("/api", requestRoutes);
 //start server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
