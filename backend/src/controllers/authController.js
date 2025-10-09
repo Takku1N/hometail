@@ -9,6 +9,36 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 
 
+exports.getMyProfile = async (req, res) => {
+    try {
+        const token = req.cookies.loginToken;
+        if (!token){
+            return res.json({
+                userData: null,
+                isLogin: false
+            })
+        }
+
+        const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
+        const user_id = decodedToken.user_id
+        const userData = await prisma.user.findUnique({
+            where: {
+                id: Number(user_id)
+            },
+            include: {
+                user_profile: true
+            }
+        })
+
+        return res.json({
+            userData: userData,
+            isLogin: true
+        })
+    } catch (error){
+        res.json({error: error.message})
+    }
+}
+
 exports.signInUser = async (req, res) => {
     const { email, password } = req.body
     try {
