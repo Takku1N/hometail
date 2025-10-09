@@ -33,6 +33,8 @@ services:
     build:
       context: ./backend
       dockerfile: backend.dockerfile
+    env_file:
+      - ./backend/.env
     ports:
       - 4000:4000
     volumes:
@@ -40,8 +42,6 @@ services:
       - /app/node_modules
     depends_on:
       - db
-    environment:
-      - DATABASE_URL=postgresql://root:1234@db:5432/hometail?schema=public
     networks:
       - frontend_network
       - backend_network

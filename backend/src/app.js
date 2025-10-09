@@ -2,9 +2,7 @@ require('dotenv').config();
 
 const express = require("express");
 const prometheus = require("./utils/metrics");
-const responseTime = require("response-time")
-const userRoutes = require("./routes/authRoutes");
-const testRoutes = require("./routes/testRoutes");
+const responseTime = require("response-time");
 
 const allowedOrigins = [process.env.FRONTEND_URL];
 const multer = require('multer');

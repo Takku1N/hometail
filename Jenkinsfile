@@ -1,12 +1,5 @@
 pipeline {
-    // กำหนดให้ Agent ของ Pipeline ทั้งหมดเป็น Docker container
     agent any
-
-    // ปิดการ checkout อัตโนมัติสำหรับทุก agent
-    // เพื่อให้เราควบคุมการ checkout และ stash/unstash ได้เอง
-    // options {
-    //     skipDefaultCheckout true
-    // }
 
     environment {
         TAG = "${env.BUILD_NUMBER}"
@@ -18,54 +11,40 @@ pipeline {
                 // เราจะ checkout โค้ดแค่ใน stage นี้ที่เดียว
                 git branch: 'plub_test', url: 'https://github.com/Takku1N/hometail.git'
                 echo "Checked out code successfully."
-                
-                // เก็บไฟล์ทั้งหมดใน workspace ปัจจุบันไว้ใน stash ชื่อ 'source'
-                // stash name: 'source', includes: '**/*'
             }
         }
 
-        // stage('Test Backend') {
-        //     agent {
-        //         docker { 
-        //             image 'node:18-alpine'
-        //             // --- แก้ไข/เพิ่มเข้ามา ---
-        //             // Run commands inside the container as the 'root' user to avoid permission issues.
-        //             // Also, mount a named volume to cache npm packages between builds.
-        //             args '-u root -v jenkins-npm-cache:/root/.npm' 
-        //         }
-        //     }
-        //     steps {
-        //         // นำไฟล์จาก stash 'source' มาวางใน workspace ใหม่นี้
-        //         unstash 'source'
-                
-        //         dir('backend') {
-        //             echo "--- Testing Backend ---"
-        //             sh 'npm install'
-        //             sh 'npm test'
-        //         }
-        //     }
-        // }
+        stage('Test Backend') {
+            agent {
+                docker { 
+                    image 'node:22-alpine'
+                    args '-u root -v jenkins-npm-cache:/root/.npm' 
+                }
+            }
+            steps {
+                dir('backend') {
+                    echo "--- Testing Backend ---"
+                    sh 'npm install'
+                    sh 'npm test'
+                }
+            }
+        }
         
-        // stage('Test Frontend') {
-        //     agent {
-        //         docker { 
-        //             image 'node:18-alpine'
-        //             // --- แก้ไข/เพิ่มเข้ามา ---
-        //             // Use the same user and named volume to share the cache.
-        //             args '-u root -v jenkins-npm-cache:/root/.npm'
-        //         }
-        //     }
-        //     steps {
-        //         // นำไฟล์จาก stash 'source' มาวางใน workspace ใหม่นี้
-        //         unstash 'source'
-                
-        //         dir('frontend') {
-        //             echo "--- Testing Frontend ---"
-        //             sh 'npm install'
-        //             sh 'npm test'
-        //         }
-        //     }
-        // }
+        stage('Test Frontend') {
+            agent {
+                docker { 
+                    image 'node:18-alpine'
+                    args '-u root -v jenkins-npm-cache:/root/.npm'
+                }
+            }
+            steps {
+                dir('frontend') {
+                    echo "--- Testing Frontend ---"
+                    sh 'npm install'
+                    sh 'npm test'
+                }
+            }
+        }
 
         stage('Build Docker Images') {
             steps {
