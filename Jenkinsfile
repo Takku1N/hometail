@@ -31,7 +31,13 @@ pipeline {
 
         stage('Test Backend') {
             agent {
-                docker { image 'node:18-alpine' }
+                docker { 
+                    image 'node:18-alpine'
+                    // --- แก้ไข/เพิ่มเข้ามา ---
+                    // Run commands inside the container as the 'root' user to avoid permission issues.
+                    // Also, mount a named volume to cache npm packages between builds.
+                    args '-u root -v jenkins-npm-cache:/root/.npm' 
+                }
             }
             steps {
                 // นำไฟล์จาก stash 'source' มาวางใน workspace ใหม่นี้
@@ -47,7 +53,12 @@ pipeline {
         
         stage('Test Frontend') {
             agent {
-                docker { image 'node:18-alpine' }
+                docker { 
+                    image 'node:18-alpine'
+                    // --- แก้ไข/เพิ่มเข้ามา ---
+                    // Use the same user and named volume to share the cache.
+                    args '-u root -v jenkins-npm-cache:/root/.npm'
+                }
             }
             steps {
                 // นำไฟล์จาก stash 'source' มาวางใน workspace ใหม่นี้
