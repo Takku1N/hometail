@@ -69,8 +69,6 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                // ต้อง unstash ที่นี่ด้วยเพื่อให้มี docker-compose.yml
-                unstash 'source' 
                 
                 echo "--- Building docker image by docker compose build"
                 sh "TAG=${TAG} docker compose build"
@@ -79,7 +77,6 @@ pipeline {
 
         stage('Deploy to Production') {
             steps {
-                unstash 'source'
                 
                 echo "--- Deploying by docker compose up ---"
                 sh "TAG=${TAG} docker compose up -d --force-recreate"
