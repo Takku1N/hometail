@@ -26,14 +26,6 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
-            steps {
-                // ดึงโค้ดจาก Git Repository (กรุณาเปลี่ยน URL เป็นของคุณ)
-                git branch: 'plub_test', url: 'https://github.com/Takku1N/hometail.git'
-                echo "Checked out code successfully."
-            }
-        }
-
         stage('Test Backend') {
             agent {
                 // ใช้ Docker Agent เพื่อสร้างสภาพแวดล้อมที่สะอาดสำหรับ Test
