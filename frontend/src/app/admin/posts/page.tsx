@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
-type PostStatus = "Approved" | "Rejected" | "Pending";
+type PostStatus = "adopted" | "not-adopted";
 
 interface AdminPost {
   id: string;
@@ -20,11 +20,11 @@ export default function AdminPostsPage() {
   const [speciesFilter, setSpeciesFilter] = useState<"ALL" | "Dog" | "Cat">("ALL");
 
   const [posts, setPosts] = useState<AdminPost[]>([
-    { id: "1", petName: "Buddy", owner: "Sarah Miller", species: "Dog", status: "Pending" },
-    { id: "2", petName: "Whiskers", owner: "David Lee", species: "Cat", status: "Approved" },
-    { id: "3", petName: "Max", owner: "Emily Chen", species: "Dog", status: "Rejected" },
-    { id: "4", petName: "Snowball", owner: "Michael Brown", species: "Cat", status: "Pending" },
-    { id: "5", petName: "Coco", owner: "Jessica Wong", species: "Dog", status: "Approved" },
+    { id: "1", petName: "Buddy", owner: "Sarah Miller", species: "Dog", status: "not-adopted" },
+    { id: "2", petName: "Whiskers", owner: "David Lee", species: "Cat", status: "adopted" },
+    { id: "3", petName: "Max", owner: "Emily Chen", species: "Dog", status: "not-adopted" },
+    { id: "4", petName: "Snowball", owner: "Michael Brown", species: "Cat", status: "not-adopted" },
+    { id: "5", petName: "Coco", owner: "Jessica Wong", species: "Dog", status: "adopted" },
   ]);
 
   const filtered = useMemo(() => {
@@ -63,6 +63,7 @@ export default function AdminPostsPage() {
             <div className="font-semibold">Admin</div>
             <div className="text-sm text-gray-600">admin@hometail.com</div>
           </div>
+          <Link href="/auth" className="ml-auto text-xs text-gray-700 hover:underline">Sign out</Link>
         </div>
       </aside>
 
@@ -84,9 +85,8 @@ export default function AdminPostsPage() {
 
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as any)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
               <option>ALL</option>
-              <option>Pending</option>
-              <option>Approved</option>
-              <option>Rejected</option>
+              <option>adopted</option>
+              <option>not-adopted</option>
             </select>
 
             <select value={speciesFilter} onChange={(e) => setSpeciesFilter(e.target.value as any)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
@@ -114,9 +114,8 @@ export default function AdminPostsPage() {
                     <td className="px-4 py-3 font-semibold">{p.owner}</td>
                     <td className="px-4 py-3">{p.species}</td>
                     <td className="px-4 py-3">
-                      {p.status === "Approved" && <span className="text-blue-600">Approved</span>}
-                      {p.status === "Pending" && <span className="text-green-600">Pending</span>}
-                      {p.status === "Rejected" && <span className="text-red-600">Rejected</span>}
+                      {p.status === "adopted" && <span className="text-green-700">adopted</span>}
+                      {p.status === "not-adopted" && <span className="text-gray-700">not-adopted</span>}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3 text-sm">
