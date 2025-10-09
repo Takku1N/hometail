@@ -15,27 +15,27 @@ const app = express();
 
 // before upload image is here
 
-const { uploadFile } = require('../uploadFile')
-const { upload }  = require('../middleware.js')
+// const { uploadFile } = require('../uploadFile')
+// const { upload }  = require('../middleware.js')
 
-app.post('/upload', upload.single('image'), async (req, res) => {
-    // https://storage.cloud.google.com/hometail/handsome-eiei.jpg
-    try{
-        // ไม่มีไฟล์
-        if (!req.file){
-            return res.status(400).json({ message: "ไม่พบไฟล์"});
-        }
+// app.post('/upload', upload.single('image'), async (req, res) => {
+//     // https://storage.cloud.google.com/hometail/handsome-eiei.jpg
+//     try{
+//         // ไม่มีไฟล์
+//         if (!req.file){
+//             return res.status(400).json({ message: "ไม่พบไฟล์"});
+//         }
         
-        const fileName = req.file.filename
-        const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
-        fs.unlinkSync(req.file.path);
-        res.status(200).json(result);
-    } catch (error){
-        res.status(500).json({ message: error.message });
-    }
+//         const fileName = req.file.filename
+//         const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
+//         fs.unlinkSync(req.file.path);
+//         res.status(200).json(result);
+//     } catch (error){
+//         res.status(500).json({ message: error.message });
+//     }
     
     
-})
+// })
 
 
 //json

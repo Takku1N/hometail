@@ -2,6 +2,8 @@
 // Prisma
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { uploadFile } = require('../../uploadFile')
+const fs = require('fs')
 
 
 exports.getMyProfile = async (req, res) => {
@@ -102,6 +104,49 @@ exports.unbanUser = async (req, res) => {
 
         return res.status(200).json(result);
     } catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
+
+exports.updateMyProfile = async (req, res) => {
+    const user_id = req.user.user_id
+    
+    if (!req.file){
+        return res.status(400).json({ message: "ไม่พบไฟล์"});
+    }
+    
+    const fileName = req.file.filename
+    const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
+    fs.unlinkSync(req.file.path);
+    image_url = process.env.BASE_BUCKET_URL + fileName
+
+    try{
+        const result = await prisma.$transaction(async (prisma) => {
+            const updateUser = await prisma.user.update({
+                where: {
+                    id: Number(user_id)
+                },
+                data: {
+                    email: req.body.email
+                }
+            })
+
+            const updateUserProfile = await prisma.userProfile.update({
+                where: {
+                    user_id: Number(user_id)
+                },
+                data: {
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
+                    phone_number: req.body.phone_number,
+                    image_url: image_url
+                }
+            })
+
+            return { updateUser, updateUserProfile }
+        })
+        res.status(200).json(result);
+    } catch (error){
         res.status(500).json({ message: error.message });
     }
 }

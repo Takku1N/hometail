@@ -44,17 +44,11 @@ model Pet {
   owner         User          @relation("owner_pet" ,fields: [owner_id], references: [id])
   // annoucer_id   Int?
   // annoucer      User?         @relation("announcer_pet", fields: [annoucer_id], references: [id])
-
-  image         PetImage[]
+  image_url     String
   profile       PetProfile?
   requests      Request[]     @relation("pet")
 }
 
-model PetImage {
-  pet_id        Int           @id
-  pet           Pet           @relation(fields: [pet_id], references: [id])
-  image_url     String
-}
 
 model PetProfile {
   pet_id        Int           @id

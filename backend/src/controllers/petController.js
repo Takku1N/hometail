@@ -3,7 +3,8 @@
 
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
+const { uploadFile } = require('../../uploadFile')
+const fs = require('fs');
 
 
 exports.getAllPet = async (req, res) => {
@@ -34,13 +35,28 @@ exports.getPetById = async (req, res) => {
 exports.createPet = async (req, res) => {
     try{
         const owner_id = req.user.user_id
+
+        // อัพโหลดรูปไปที่ cloud 
+        if (!req.file){
+            return res.status(400).json({ message: "ไม่พบไฟล์"});
+        }
+
+        const fileName = req.file.filename
+        const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
+        fs.unlinkSync(req.file.path);
+        image_url = process.env.BASE_BUCKET_URL + fileName
+
         const newPet = await prisma.$transaction(async (prisma) => {
+
+            // สร้าง pet
             const pet = await prisma.pet.create({
                 data: {
-                    owner_id: owner_id
+                    owner_id: owner_id,
+                    image_url: image_url
                 }
             })
 
+            // สร้าง pet profile
             const petProfile = await prisma.petProfile.create({
                 data: {
                     pet_id: pet.id,
@@ -48,11 +64,11 @@ exports.createPet = async (req, res) => {
                     description: req.body.description,
                     location: req.body.location,
                     gender: req.body.gender,
-                    age: req.body.age,
-                    vaccinated: req.body.vaccinated,
+                    age: Number(req.body.age),
+                    vaccinated: Boolean(req.body.vaccinated),
                     breed: req.body.breed,
                     medical_note: req.body.medical_note,
-                    neutered: req.body.neutered,
+                    neutered: Boolean(req.body.neutered),
                     species : req.body.species,
                 }
             })
