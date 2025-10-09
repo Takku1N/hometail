@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.loginToken;
 
@@ -69,8 +68,11 @@ const isAdmin = async (req, res, next) => {
     }
 }
 
+
+
 module.exports = {
     authenticateToken,
     isPetOwner,
     isAdmin
+
 }

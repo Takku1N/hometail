@@ -1,6 +1,9 @@
 require('dotenv').config();
 
 const express = require("express");
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes")
@@ -11,12 +14,15 @@ const cookieParser = require('cookie-parser')
 const app = express();
 
 // before upload image is here
-const { uploadFile } = require('../uploadFile')
 
-app.post('/upload', async (req, res) => {
+const { uploadFile } = require('../uploadFile')
+const upload = multer({ dest: 'uploads/'})
+
+app.post('/upload', upload.single('image'), async (req, res) => {
     // https://storage.cloud.google.com/hometail/handsome-eiei.jpg
-    const result = await uploadFile(process.env.BUCKET_NAME, 'handsome.jpg', 'handsome-eiei.jpg')
-    res.status(200).json(result)
+    console.log(req.file)
+    // const result = await uploadFile(process.env.BUCKET_NAME, 'handsome.jpg', 'handsome-eiei.jpg')
+    res.status(200).json(req.file.path)
 })
 
 
