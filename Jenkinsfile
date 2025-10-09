@@ -7,6 +7,12 @@ pipeline {
         }
     }
 
+    // ปิดการ checkout อัตโนมัติสำหรับทุก agent
+    // เพื่อให้เราควบคุมการ checkout และ stash/unstash ได้เอง
+    options {
+        skipDefaultCheckout true
+    }
+
     environment {
         TAG = "${env.BUILD_NUMBER}"
     }
@@ -14,10 +20,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // เราจะ checkout โค้ดแค่ใน stage นี้ที่เดียว
                 git branch: 'plub_test', url: 'https://github.com/Takku1N/hometail.git'
                 echo "Checked out code successfully."
                 
-                // --- เพิ่มเข้ามา ---
                 // เก็บไฟล์ทั้งหมดใน workspace ปัจจุบันไว้ใน stash ชื่อ 'source'
                 stash name: 'source', includes: '**/*'
             }
@@ -28,7 +34,6 @@ pipeline {
                 docker { image 'node:18-alpine' }
             }
             steps {
-                // --- เพิ่มเข้ามา ---
                 // นำไฟล์จาก stash 'source' มาวางใน workspace ใหม่นี้
                 unstash 'source'
                 
@@ -45,7 +50,7 @@ pipeline {
                 docker { image 'node:18-alpine' }
             }
             steps {
-                // --- เพิ่มเข้ามา ---
+                // นำไฟล์จาก stash 'source' มาวางใน workspace ใหม่นี้
                 unstash 'source'
                 
                 dir('frontend') {
@@ -58,8 +63,8 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                // --- เพิ่มเข้ามา ---
-                unstash 'source' // ต้อง unstash ที่นี่ด้วยเพื่อให้มี docker-compose.yml
+                // ต้อง unstash ที่นี่ด้วยเพื่อให้มี docker-compose.yml
+                unstash 'source' 
                 
                 echo "--- Building docker image by docker compose build"
                 sh "TAG=${TAG} docker compose build"
@@ -68,7 +73,6 @@ pipeline {
 
         stage('Deploy to Production') {
             steps {
-                // --- เพิ่มเข้ามา ---
                 unstash 'source'
                 
                 echo "--- Deploying by docker compose up ---"
@@ -89,3 +93,4 @@ pipeline {
         }
     }
 }
+
