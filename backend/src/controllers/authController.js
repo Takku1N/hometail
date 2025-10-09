@@ -43,12 +43,14 @@ exports.signInUser = async (req, res) => {
     const { email, password } = req.body
     try {
         // ค้นหา Email
+        console.log("กำลังหา")
         const user = await prisma.user.findUnique({
             where: {
                 email: email,
             },
         });
 
+        console.log("หาเเล้ว")
         if (!user) return res.status(401).json({ message: 'Invalid email or password' });
 
         // ตรวจสอบ Password
@@ -71,6 +73,7 @@ exports.signInUser = async (req, res) => {
         return res.status(200).json({message: "เข้าสู่ระบบสำเร็จ"})
 
     } catch (err) {
+        console.log("sing in eiei")
         res.status(500).json({ message: err.message })
     }
 };
