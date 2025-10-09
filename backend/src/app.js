@@ -11,6 +11,14 @@ const cookieParser = require('cookie-parser')
 const app = express();
 
 // before upload image is here
+const { uploadFile } = require('../uploadFile')
+
+app.post('/upload', async (req, res) => {
+    // https://storage.cloud.google.com/hometail/handsome-eiei.jpg
+    const result = await uploadFile(process.env.BUCKET_NAME, 'handsome.jpg', 'handsome-eiei.jpg')
+    res.status(200).json(result)
+})
+
 
 //json
 app.use(express.json());
