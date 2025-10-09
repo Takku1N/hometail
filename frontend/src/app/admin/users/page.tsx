@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-type UserStatus = "Active" | "Banned" | "Pending";
+type UserStatus = "Active" | "Pending";
 
 interface AdminUser {
   id: string;
@@ -17,31 +17,33 @@ interface AdminUser {
 
 export default function AdminUsersPage() {
   const [query, setQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState<"ALL" | "Owner" | "Adopter">("ALL");
   const [statusFilter, setStatusFilter] = useState<"ALL" | UserStatus>("ALL");
 
   const [users, setUsers] = useState<AdminUser[]>([
     { id: "1", name: "Sophia Carter", role: "Owner", email: "sophia.carter@email.com", joinDate: "2023-01-15", status: "Active" },
     { id: "2", name: "Ethan Bennett", role: "Adopter", email: "ethan.bennett@email.com", joinDate: "2022-11-20", status: "Active" },
-    { id: "3", name: "Olivia Hayes", role: "Owner", email: "olivia.hayes@email.com", joinDate: "2023-03-05", status: "Active" },
-    { id: "4", name: "Liam Foster", role: "Adopter", email: "liam.foster@email.com", joinDate: "2022-09-10", status: "Banned" },
+    { id: "3", name: "Olivia Hayes", role: "Owner", email: "olivia.hayes@email.com", joinDate: "2023-03-05", status: "Pending" },
+    { id: "4", name: "Liam Foster", role: "Adopter", email: "liam.foster@email.com", joinDate: "2022-09-10", status: "Active" },
     { id: "5", name: "Ava Morgan", role: "Owner", email: "ava.morgan@email.com", joinDate: "2023-05-22", status: "Active" },
   ]);
 
   const filtered = useMemo(() => {
     return users.filter((u) => {
       const matchQuery = `${u.name} ${u.email}`.toLowerCase().includes(query.toLowerCase());
-      const matchRole = roleFilter === "ALL" ? true : u.role === roleFilter;
       const matchStatus = statusFilter === "ALL" ? true : u.status === statusFilter;
-      return matchQuery && matchRole && matchStatus;
+      return matchQuery && matchStatus;
     });
-  }, [users, query, roleFilter, statusFilter]);
+  }, [users, query, statusFilter]);
 
   function approve(id: string) {
     setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, status: "Active" } : u)));
   }
   function reject(id: string) {
-    setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, status: "Banned" } : u)));
+    // For Pending users, reject = delete user request
+    setUsers((prev) => prev.filter((u) => u.id !== id));
+  }
+  function deleteUser(id: string) {
+    setUsers((prev) => prev.filter((u) => u.id !== id));
   }
 
   return (
@@ -67,6 +69,7 @@ export default function AdminUsersPage() {
             <div className="font-semibold">Admin</div>
             <div className="text-sm text-gray-600">admin@hometail.com</div>
           </div>
+          <Link href="/auth" className="ml-auto text-xs text-gray-700 hover:underline">Sign out</Link>
         </div>
       </aside>
 
@@ -87,23 +90,12 @@ export default function AdminUsersPage() {
               <span className="absolute left-3 top-1/2 -translate-y-1/2">🔍</span>
             </div>
 
-            <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value as any)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
-              <option>ALL</option>
-              <option>Owner</option>
-              <option>Adopter</option>
-            </select>
-
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as any)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
               <option>ALL</option>
               <option>Active</option>
               <option>Pending</option>
-              <option>Banned</option>
             </select>
-
-            <button className="ml-auto flex items-center gap-2 rounded-full bg-green-200 hover:bg-green-300 px-4 py-2 shadow">
-              <span>➕</span>
-              <span>Add New User</span>
-            </button>
+            
           </div>
 
           {/* Table */}
@@ -112,7 +104,6 @@ export default function AdminUsersPage() {
               <thead className="" style={{ backgroundColor: "#F9E6EA" }}>
                 <tr>
                   <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Role</th>
                   <th className="px-4 py-3">Email</th>
                   <th className="px-4 py-3">Join Date</th>
                   <th className="px-4 py-3">Status</th>
@@ -123,18 +114,24 @@ export default function AdminUsersPage() {
                 {filtered.map((u) => (
                   <tr key={u.id} className="odd:bg-white even:bg-pink-50/40">
                     <td className="px-4 py-3">{u.name}</td>
-                    <td className="px-4 py-3 font-semibold">{u.role}</td>
                     <td className="px-4 py-3">{u.email}</td>
                     <td className="px-4 py-3">{u.joinDate}</td>
                     <td className="px-4 py-3">
                       {u.status === "Active" && <span className="text-green-600">Active</span>}
-                      {u.status === "Banned" && <span className="text-red-600">Banned</span>}
                       {u.status === "Pending" && <span className="text-yellow-700">Pending</span>}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <button onClick={() => reject(u.id)} className="rounded-full bg-red-100 hover:bg-red-200 px-3 py-1 text-xs text-red-700">Reject</button>
-                        <button onClick={() => approve(u.id)} className="rounded-full bg-green-200 hover:bg-green-300 px-3 py-1 text-xs text-green-900">Approve</button>
+                        {u.status === "Pending" ? (
+                          <>
+                            <button onClick={() => reject(u.id)} className="rounded-full bg-red-100 hover:bg-red-200 px-3 py-1 text-xs text-red-700">Reject</button>
+                            <button onClick={() => approve(u.id)} className="rounded-full bg-green-200 hover:bg-green-300 px-3 py-1 text-xs text-green-900">Approve</button>
+                          </>
+                        ) : (
+                          <>
+                            <button onClick={() => deleteUser(u.id)} className="rounded-full bg-gray-200 hover:bg-gray-300 px-3 py-1 text-xs text-gray-800">Delete</button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

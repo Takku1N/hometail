@@ -19,10 +19,13 @@ model User {
   password      String
   role          Role          @default(User)
   status        Boolean       @default(false) // ควรเปลี่ยนเป็น is_verrified
+  createdAt   DateTime?  @default(now())
+  updatedAt   DateTime?  @updatedAt
 
   user_profile  UserProfile?
   owned_pets    Pet[]         @relation("owner_pet")
-  announed_pets Pet[]         @relation("announcer_pet")
+  // announed_pets Pet[]         @relation("announcer_pet")
+  requestsSent  Request[]     @relation("requester")
 }
 
 model UserProfile {
@@ -39,37 +42,50 @@ model Pet {
   id            Int           @id @default(autoincrement())
   owner_id      Int
   owner         User          @relation("owner_pet" ,fields: [owner_id], references: [id])
-  annoucer_id   Int
-  annoucer      User          @relation("announcer_pet", fields: [annoucer_id], references: [id])
-
-  image         PetImage[]
-  profile       PetProfile?
-}
-
-model PetImage {
-  pet_id        Int           @id
-  pet           Pet           @relation(fields: [pet_id], references: [id])
+  // annoucer_id   Int?
+  // annoucer      User?         @relation("announcer_pet", fields: [annoucer_id], references: [id])
   image_url     String
+  profile       PetProfile?
+  requests      Request[]     @relation("pet")
 }
+
 
 model PetProfile {
   pet_id        Int           @id
   pet           Pet           @relation(fields: [pet_id], references: [id])
   name          String
-  description   String
-  location      String
-  pet_type      PetType
-  gender        String
   age           Int
-  weight        Float
+  gender        String
+  description   String
+  breed        String
+  location      String
   vaccinated    Boolean
-  sterilized    Boolean
-  dicease       String?
+  neutered     Boolean
+  medical_note  String?
+  species      PetType
+  adopted       Boolean       @default(false)
+}
+
+model Request {
+  id Int @id @default(autoincrement())
+  requester_id Int
+  requester   User      @relation("requester",fields: [requester_id], references: [id])
+  pet_id       Int
+  pet         Pet       @relation("pet", fields: [pet_id], references: [id])
+  status RequestStatus @default(Pending)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 enum Role {
   User
   Admin
+}
+
+enum RequestStatus {
+  Pending
+  Approved
+  Rejected
 }
 
 enum PetType {

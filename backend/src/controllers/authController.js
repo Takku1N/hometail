@@ -1,7 +1,9 @@
 
 // Prisma
 const { PrismaClient } = require("@prisma/client");
+const jwt = require('jsonwebtoken')
 const prisma = new PrismaClient();
+
 
 // Bcrypt for hash function
 const bcrypt = require("bcrypt");
@@ -16,16 +18,28 @@ exports.signInUser = async (req, res) => {
                 email: email,
             },
         });
+
         if (!user) return res.status(401).json({ message: 'Invalid email or password' });
 
         // ตรวจสอบ Password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ message: 'Invalid email or password' });
 
-        // จัดการ session
-        // ...
 
-        return res.status(200).json(user.id);
+        if (!user.status) return res.json({message: "คุณยังไม่ได้สิทธิ์ในการใช้เว็บไซต์"})
+        // จัดการ cookie
+        const token = jwt.sign({user_id: user.id}, process.env.JWT_SECRET, {
+            expiresIn: "3d"
+        })
+
+        res.cookie("loginToken", token, {
+            httpOnly: true,
+            maxAge: 24*60*60*1000,
+            sameSite: "strict"
+        })
+
+        return res.status(200).json({message: "เข้าสู่ระบบสำเร็จ"})
+
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
@@ -60,11 +74,30 @@ exports.signUpUser = async (req, res) => {
                 user_profile: true,
             }
         });
-        res.status(200).json(user.id);
+        res.status(200).json({message: "ลงทะเบียนสำเร็จกรุณารอ admin อนุมัติ"});
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
 };
+
+
+exports.signOutUser = async (req, res) => {
+    try{
+        res.clearCookie("loginToken", {
+            httpOnly: true,
+            sameSite: "strict",
+            path: "/"
+        })
+        res.json({
+            message: "Logout สำเร็จ"
+        })
+    } catch (error){
+        res.json({
+            message: "Logout ไม่สำเร็จ",
+            error
+        })
+    }
+}
 
 exports.changePassword = async (req, res) => {
     const { email, password } = req.body
