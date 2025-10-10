@@ -144,7 +144,7 @@ function PostCard({
           <h2 className="text-lg text-green-500"> Adopted </h2>
         ): null}
         <h3 className="mt-1 text-xl font-extrabold">🐶 {title}</h3>
-        <div className="text-sm text-gray-800">{age} ปี- {gender} - {breed} </div>
+        <div className="text-sm text-gray-800">{age} ขวบ 🫶 {gender} - {breed} </div>
         <div className="text-sm text-gray-700 mt-1">📍 {location}</div>
         <p className="text-sm text-gray-600 mt-1">{desc}</p>
 

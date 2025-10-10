@@ -36,19 +36,20 @@ exports.getPetById = async (req, res) => {
     }}
 
 exports.createPet = async (req, res) => {
-    try{
-        const owner_id = req.user.user_id
-
-        // อัพโหลดรูปไปที่ cloud 
-        if (!req.file){
-            return res.status(400).json({ message: "ไม่พบไฟล์"});
-        }
-
+    let image_url;
+    if (req.file){
         const fileName = req.file.filename
         const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
         fs.unlinkSync(req.file.path);
         image_url = process.env.BASE_BUCKET_URL + fileName
-
+    } else {
+        image_url = null
+    }
+    
+    try{
+        const owner_id = req.user.user_id
+        console.log(req.body)
+        console.log(owner_id)
         const newPet = await prisma.$transaction(async (prisma) => {
 
             // สร้าง pet
@@ -58,6 +59,21 @@ exports.createPet = async (req, res) => {
                 }
             })
 
+            // console.log("=== Creating PetProfile ===");
+            // console.log("pet_id:", pet.id, "type:", typeof pet.id);
+            // console.log("name:", req.body.name, "type:", typeof req.body.name);
+            // console.log("description:", req.body.description, "type:", typeof req.body.description);
+            // console.log("location:", req.body.location, "type:", typeof req.body.location);
+            // console.log("gender:", req.body.gender, "type:", typeof req.body.gender);
+            // console.log("age:", Number(req.body.age), "type:", typeof Number(req.body.age));
+            // console.log("vaccinated:", req.body.vaccinated === 'true', "type:", typeof (req.body.vaccinated === 'true'));
+            // console.log("breed:", req.body.breed, "type:", typeof req.body.breed);
+            // console.log("medical_note:", req.body.medical_note, "type:", typeof req.body.medical_note);
+            // console.log("neutered:", req.body.neutered === 'true', "type:", typeof (req.body.neutered === 'true'));
+            // console.log("species:", req.body.species, "type:", typeof req.body.species);
+            // console.log("image_url:", image_url, "type:", typeof image_url);
+            // console.log("===========================");
+        
             // สร้าง pet profile
             const petProfile = await prisma.petProfile.create({
                 data: {
@@ -67,14 +83,16 @@ exports.createPet = async (req, res) => {
                     location: req.body.location,
                     gender: req.body.gender,
                     age: Number(req.body.age),
-                    vaccinated: Boolean(req.body.vaccinated),
+                    vaccinated: req.body.vaccinated === 'true',
                     breed: req.body.breed,
                     medical_note: req.body.medical_note,
-                    neutered: Boolean(req.body.neutered),
+                    neutered: req.body.neutered === 'true',
                     species : req.body.species,
                     image_url: image_url
                 }
             })
+
+            console.log("=== Created PetProfile ===");
 
             return { pet, petProfile };
             
