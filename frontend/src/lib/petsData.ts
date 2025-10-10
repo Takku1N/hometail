@@ -8,22 +8,22 @@ export interface PetDetail extends PetInfo {
 }
 
 export const demoPets: PetDetail[] = [
-  {
-    id: "iq",
-    name: "iQ",
-    species: "dog",
-    ageText: "2 ขวบ",
-    gender: "เพศผู้",
-    breed: "Beagle",
-    location: "กรุงเทพ, TH",
-    traits: "ขี้เล่น ร่าเริง ชอบวิ่งเล่น เข้ากับคนง่าย",
-    imageSrc: "/images/husky.jpg",
-    vaccinations: "ได้รับวัคซีนครบถ้วน",
-    neutered: true,
-    about:
-      "iQ เป็นน้องสุนัขเพศผู้ขี้เล่น ร่าเริง และเป็นมิตรสุด ๆ เขาชอบวิ่งเล่นกลางแจ้งและชอบอยู่ใกล้คนตลอดเวลา พร้อมจะมอบความรักและความซื่อสัตย์ให้กับครอบครัวใหม่ที่พร้อมดูแล",
-    owner: "ink waruntorn",
-  },
+  // {
+  //   id: "iq",
+  //   name: "iQ",
+  //   species: "dog",
+  //   ageText: "2 ขวบ",
+  //   gender: "เพศผู้",
+  //   breed: "Beagle",
+  //   location: "กรุงเทพ, TH",
+  //   traits: "ขี้เล่น ร่าเริง ชอบวิ่งเล่น เข้ากับคนง่าย",
+  //   imageSrc: "/images/husky.jpg",
+  //   vaccinations: "ได้รับวัคซีนครบถ้วน",
+  //   neutered: true,
+  //   about:
+  //     "iQ เป็นน้องสุนัขเพศผู้ขี้เล่น ร่าเริง และเป็นมิตรสุด ๆ เขาชอบวิ่งเล่นกลางแจ้งและชอบอยู่ใกล้คนตลอดเวลา พร้อมจะมอบความรักและความซื่อสัตย์ให้กับครอบครัวใหม่ที่พร้อมดูแล",
+  //   owner: "ink waruntorn",
+  // },
   {
     id: "luna",
     name: "Luna",

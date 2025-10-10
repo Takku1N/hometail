@@ -8,9 +8,25 @@ import { demoPets } from "@/lib/petsData";
 import { redirect } from 'next/navigation'
 
 import axios from "axios";
+import { join } from "path";
 
 
 export default function Home() {
+
+   useEffect(() => {
+
+      const fetchData = async () => {
+        const base_api = process.env.NEXT_PUBLIC_API_URL
+        const response = await axios.get(`${base_api}/pet`, {withCredentials: true});
+        const allPet = response.data;
+        console.log(allPet)
+      }
+      
+      fetchData()
+
+   }, [])
+
+
   const [search, setSearch] = useState("");
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -20,18 +36,18 @@ export default function Home() {
     );
   }, [search]);
 
-    useEffect(() => {
-        const fetchToken = async () => {
-          const base_api = process.env.NEXT_PUBLIC_API_URL
-          const response = await axios.get(`${base_api}/myprofile`, {withCredentials: true})
-          const data = response.data
-          const isLogin = data.isLogin;
-          if (!isLogin){
-            return redirect('/auth')
-          }
-        }
-        fetchToken()
-    }, [])
+    // useEffect(() => {
+    //     const fetchToken = async () => {
+    //       const base_api = process.env.NEXT_PUBLIC_API_URL
+    //       const response = await axios.get(`${base_api}/myprofile`, {withCredentials: true})
+    //       const data = response.data
+    //       const isLogin = data.isLogin;
+    //       if (!isLogin){
+    //         return redirect('/auth')
+    //       }
+    //     }
+    //     fetchToken()
+    // }, [])
   
   return (
     <main className="min-h-screen bg-gray-50">

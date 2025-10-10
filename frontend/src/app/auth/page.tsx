@@ -133,7 +133,7 @@ export default function AuthPage() {
         <div className="absolute top-6 left-6">
           {/* <h1 className="text-3xl font-bold text-gray-700">HomeTail</h1>
           <p className="text-sm text-gray-500">Where every tail finds a home</p> */}
-          <Image 
+          <img 
           src="/images/hometail_icon.png"
           alt="hometail_icon"
           width={200}
@@ -141,7 +141,7 @@ export default function AuthPage() {
           />
         </div>
         {/* <div className="flex flex-col items-center mt-12"> */}
-          <Image
+          <img
             src="/images/hometail_signin.png"
             alt="hometail_signin"
             width={750}
