@@ -1,3 +1,8 @@
+export interface MyProfileResponse{
+  userData: UserInterface | null
+  isLogin: boolean
+}
+
 export interface UserInterface {
   id: number;
   email: string;

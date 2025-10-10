@@ -8,7 +8,7 @@ const { authenticateToken } = require('../../middleware');
 
 // approve เเละ reject request ที่คนอื่นส่งมาให้ owner
 router.put('/request/approve/:id', authenticateToken, requestController.approveRequest);
-router.put('/request/reject/:id', authenticateToken, requestController.rejectRequest);
+router.put('/request/reject/:id',  requestController.rejectRequest);
 
 // get request ที่คนอื่นส่งมาให้เรา
 router.get('/request/owner', authenticateToken, requestController.getRequestByOwnerId);

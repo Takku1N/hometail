@@ -3,7 +3,11 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import fetchData from "@/app/fetchData";
+import axios from "axios";
+
+import { UserProfileInterface, UserInterface, MyProfileResponse } from "@/interface";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -12,6 +16,20 @@ export default function EditProfilePage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [profileData, setProfileData] = useState<MyProfileResponse>()
+
+  useEffect(() => {
+    const myUser = async () => {
+        const base_api = process.env.NEXT_PUBLIC_API_URL
+        const response = await axios.get(`${base_api}/myprofile` , {withCredentials: true})
+        setFirstName(response.data.userData.user_profile.first_name)
+        setLastName(response.data.userData.user_profile.last_name)
+        setEmail(response.data.userData.email)
+        setPhone(response.data.userData.user_profile.phone_number)
+        
+    } 
+    myUser()
+  }, [])
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -21,6 +39,8 @@ export default function EditProfilePage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
+      
+      
       <div className="mx-auto max-w-6xl px-4 py-8">
         <div className="rounded-3xl bg-white shadow p-6 md:p-10">
           <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8 md:gap-12 items-start">
@@ -76,7 +96,7 @@ export default function EditProfilePage() {
                 </Field>
               </div>
 
-              <Field label="Address" required>
+              {/* <Field label="Address" required>
                 <textarea
                   rows={5}
                   value={address}
@@ -84,7 +104,7 @@ export default function EditProfilePage() {
                   placeholder="Address"
                   className="w-full rounded-xl border border-green-300 px-4 py-3 outline-none focus:ring-2 focus:ring-green-400"
                 />
-              </Field>
+              </Field> */}
 
               <div className="flex items-center justify-end gap-4 pt-2">
                 <button type="button" onClick={() => router.back()} className="rounded-lg bg-gray-100 hover:bg-gray-200 px-5 py-2">
