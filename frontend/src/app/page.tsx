@@ -1,9 +1,14 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import PetCard from "@/components/PetCard";
 import { demoPets } from "@/lib/petsData";
+
+import { redirect } from 'next/navigation'
+
+import axios from "axios";
+
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -15,6 +20,19 @@ export default function Home() {
     );
   }, [search]);
 
+    useEffect(() => {
+        const fetchToken = async () => {
+          const base_api = process.env.NEXT_PUBLIC_API_URL
+          const response = await axios.get(`${base_api}/myprofile`, {withCredentials: true})
+          const data = response.data
+          const isLogin = data.isLogin;
+          if (!isLogin){
+            return redirect('/auth')
+          }
+        }
+        fetchToken()
+    }, [])
+  
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar onSearchChange={setSearch} />

@@ -25,7 +25,7 @@ export default function AuthPage() {
   // API Func
   const signIn = async () => {
     try {
-      const response = await axios.post(`${apiUrl}/auth/signin`, {
+      const response = await axios.post(`${apiUrl}/signin`, {
         email: email, password: password
       }, {
         headers: { "Content-Type": "application/json" },
@@ -33,6 +33,7 @@ export default function AuthPage() {
       });
       
       console.log(response);
+      alert("ล็อคอินสำเร็จ")
       router.push("/");
     } catch (err) {
       alert("พบข้อผิดพลาด กรุณาลงชื่อเข้าใช้ใหม่");

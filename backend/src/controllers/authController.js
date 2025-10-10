@@ -9,16 +9,48 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 
 
+exports.getMyProfile = async (req, res) => {
+    try {
+        const token = req.cookies.loginToken;
+        if (!token){
+            return res.json({
+                userData: null,
+                isLogin: false
+            })
+        }
+
+        const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
+        const user_id = decodedToken.user_id
+        const userData = await prisma.user.findUnique({
+            where: {
+                id: Number(user_id)
+            },
+            include: {
+                user_profile: true
+            }
+        })
+
+        return res.json({
+            userData: userData,
+            isLogin: true
+        })
+    } catch (error){
+        res.json({error: error.message})
+    }
+}
+
 exports.signInUser = async (req, res) => {
     const { email, password } = req.body
     try {
         // ค้นหา Email
+        console.log("กำลังหา")
         const user = await prisma.user.findUnique({
             where: {
                 email: email,
             },
         });
 
+        console.log("หาเเล้ว")
         if (!user) return res.status(401).json({ message: 'Invalid email or password' });
 
         // ตรวจสอบ Password
@@ -41,6 +73,7 @@ exports.signInUser = async (req, res) => {
         return res.status(200).json({message: "เข้าสู่ระบบสำเร็จ"})
 
     } catch (err) {
+        console.log("sing in eiei")
         res.status(500).json({ message: err.message })
     }
 };

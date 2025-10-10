@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
-
+import { redirect, usePathname } from "next/navigation";
+import axios from "axios";
 interface NavbarProps {
   onSearchChange?: (value: string) => void;
 }
@@ -72,6 +72,11 @@ function ProfileMenu() {
     return () => document.removeEventListener("click", onClickOutside);
   }, []);
 
+  const signout = async () => {
+    const base_api = process.env.NEXT_PUBLIC_API_URL
+    await axios.get(`${base_api}/signout`, {withCredentials:true})
+    redirect('/auth')
+  }
   return (
     <div className="relative" ref={ref}>
       <button
@@ -98,7 +103,7 @@ function ProfileMenu() {
           <button
             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 cursor-pointer"
             role="menuitem"
-            onClick={() => setOpen(false)}
+            onClick={signout}
           >
             Sign out
           </button>
