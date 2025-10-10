@@ -16,7 +16,7 @@ router.get('/request/owner', authenticateToken, requestController.getRequestByOw
 // get request ที่เราเป็นคนส่งไป
 router.get('/request/myrequest', authenticateToken, requestController.getMyRequest);
 
-router.post('/request', authenticateToken, requestController.createRequest);
+router.post('/request/:id', authenticateToken, requestController.createRequest);
 
 
 module.exports = router;

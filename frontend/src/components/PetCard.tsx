@@ -44,7 +44,7 @@ export default function PetCard({ pet }: PetCardProps) {
         {/* <img src={pet.image_url} alt="" /> */}
       </div>
       <div className="p-4">
-        <Link href={`/pet/${pet.pet_id}`} className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:underline">
+        <Link href={`/pets/${pet.pet_id}`} className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:underline">
           <span>{pet.name}</span>
         </Link>
         <div className="mt-1 text-sm text-gray-700">
@@ -52,9 +52,9 @@ export default function PetCard({ pet }: PetCardProps) {
           <span> • {pet.gender} • {pet.breed}</span>
         </div>
         <div className="mt-1 text-sm text-gray-600">📍 {pet.location}</div>
-        <button className="mt-3 block mx-auto rounded-full bg-[#81C784] hover:bg-[#6FBF73] text-white px-5 py-2 text-sm shadow">
+        <a className="mt-3 block mx-auto rounded-full bg-[#81C784] hover:bg-[#6FBF73] text-white px-5 py-2 text-sm shadow cursor-pointer text-center" href={`/pets/${pet.pet.id}`}>
           Adopt Me 🐾
-        </button>
+        </a>
       </div>
     </div>
   );

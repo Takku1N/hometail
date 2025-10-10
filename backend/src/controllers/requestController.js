@@ -37,14 +37,27 @@ exports.getRequestByOwnerId = async (req, res) => {
 exports.approveRequest = async (req, res) => {
     const request_id = req.params.id;
     try{
-        const updatedRequest = await prisma.request.update({
-            where: {
-                id: Number(request_id)
-            },
-            data: {
-                status: 'Approved'
-            }
-        })
+       const result = await prisma.$transaction(async (prisma) => {
+            const updatedRequest = await prisma.request.update({
+                where: {
+                    id: Number(request_id)
+                },
+                data: {
+                    status: 'Approved'
+                }
+            })
+
+            const updatePetProfile = await prisma.petProfile.update({
+                where: {
+                    pet_id: Number(updatedRequest.pet_id)
+                },
+                data: {
+                    adopted: true
+                }
+            })
+
+            return { updatedRequest, updatePetProfile };
+       })
 
         res.status(200).json(updatedRequest);
     } catch (error){
@@ -55,14 +68,27 @@ exports.approveRequest = async (req, res) => {
 exports.rejectRequest = async (req, res) => {
     const request_id = req.params.id;
     try{
-        const updatedRequest = await prisma.request.update({
-            where: {
-                id: Number(request_id)
-            },
-            data: {
-                status: 'Rejected'
-            }
-        })
+       const result = await prisma.$transaction(async (prisma) => {
+            const updatedRequest = await prisma.request.update({
+                where: {
+                    id: Number(request_id)
+                },
+                data: {
+                    status: 'Rejected'
+                }
+            })
+
+            const updatePetProfile = await prisma.petProfile.update({
+                where: {
+                    pet_id: Number(updatedRequest.pet_id)
+                },
+                data: {
+                    adopted: false
+                }
+            })
+
+            return { updatedRequest, updatePetProfile };
+       })
 
         res.status(200).json(updatedRequest);
     } catch (error){
@@ -75,7 +101,7 @@ exports.createRequest = async (req, res) => {
         const newRequest = await prisma.request.create({
         data: {
             requester_id: Number(requester_id),
-            pet_id: Number(req.body.pet_id),
+            pet_id: Number(req.params.id),
             status: 'Pending'
         }
     })

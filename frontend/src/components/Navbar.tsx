@@ -74,7 +74,7 @@ function ProfileMenu() {
 
   const signout = async () => {
     const base_api = process.env.NEXT_PUBLIC_API_URL
-    await axios.get(`${base_api}/signout`, {withCredentials:true})
+    await axios.get(`${base_api}/auth/signout`, {withCredentials:true})
     redirect('/auth')
   }
   return (

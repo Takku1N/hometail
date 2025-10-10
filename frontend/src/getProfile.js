@@ -7,7 +7,7 @@ export const getProfile = async () =>{
     const base_api = process.env.NEXT_PUBLIC_API_URL
     const cookieStore = await cookies();
     const cookieString = cookieStore.toString();
-    const response = await axios.get(`${base_api}/myprofile`, {
+    const response = await axios.get(`${base_api}/auth/myprofile`, {
       headers: {
         Cookie: cookieString
       }

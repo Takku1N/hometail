@@ -72,7 +72,7 @@ app.use(
 );
 
 // REST API
-app.use("/api", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", petRoutes);
 app.use("/api", requestRoutes);

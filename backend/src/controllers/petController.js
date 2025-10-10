@@ -28,8 +28,12 @@ exports.getPetById = async (req, res) => {
     try {
         const pet = await prisma.petProfile.findUnique({
             where: {
-                pet_id: parseInt(pet_id)
-        }})
+                pet_id: Number(pet_id)
+            },
+            include: {
+                pet: true
+            }
+    })
         return res.status(200).json(pet);
     } catch (error){
         res.status(500).json({ message: error.message });
