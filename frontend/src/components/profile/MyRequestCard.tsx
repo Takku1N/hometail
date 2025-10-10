@@ -1,7 +1,7 @@
 import React from 'react'
 import { RequestInterface } from '@/interface'
 
-export default function MyRequestCard() {
+export default function MyRequestCard({req}: {req:RequestInterface}) {
   return (
     <div className="rounded-xl bg-white p-3 flex items-center gap-4 shadow-sm w-full hover:-translate-y-1 duration-200 hover:bg-gray-100 hover:shadow-lg" key={req.id}>
         <div className="relative w-28 h-20 rounded-lg overflow-hidden">

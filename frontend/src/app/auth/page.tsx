@@ -32,7 +32,10 @@ export default function AuthPage() {
         withCredentials: true,
       });
       
-      console.log(response);
+      if (response.data.message=="คุณยังไม่ได้สิทธิ์ในการใช้เว็บไซต์") {
+        return alert("คุณยังไม่ได้สิทธิ์ในการใช้เว็บไซต์")
+      }
+
       alert("ล็อคอินสำเร็จ")
       router.push("/");
     } catch (err) {
@@ -44,7 +47,7 @@ export default function AuthPage() {
 
   const signUp = async () => {
     try {
-      const response = await axios.post(`${apiUrl}/auth/signup`, {
+      const response = await axios.post(`${apiUrl}/signup`, {
         email: email,
         password: password,
         first_name: firstName,

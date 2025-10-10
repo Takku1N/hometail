@@ -1,49 +1,85 @@
 "use client";
 
+import fetchData from "@/app/fetchData";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { RoleInterface, UserProfileInterface } from "@/interface"
+import axios from "axios";
+
+const base_api = process.env.NEXT_PUBLIC_API_URL;
 
 type UserStatus = "Active" | "Pending";
 
-interface AdminUser {
-  id: string;
-  name: string;
-  role: "Owner" | "Adopter";
+interface User {
+  id: number;
+  role: RoleInterface;
   email: string;
-  joinDate: string;
-  status: UserStatus;
+  createdAt?: string;
+  status: boolean;
+  user_profile: UserProfileInterface;
 }
 
 export default function AdminUsersPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | UserStatus>("ALL");
 
-  const [users, setUsers] = useState<AdminUser[]>([
-    { id: "1", name: "Sophia Carter", role: "Owner", email: "sophia.carter@email.com", joinDate: "2023-01-15", status: "Active" },
-    { id: "2", name: "Ethan Bennett", role: "Adopter", email: "ethan.bennett@email.com", joinDate: "2022-11-20", status: "Active" },
-    { id: "3", name: "Olivia Hayes", role: "Owner", email: "olivia.hayes@email.com", joinDate: "2023-03-05", status: "Pending" },
-    { id: "4", name: "Liam Foster", role: "Adopter", email: "liam.foster@email.com", joinDate: "2022-09-10", status: "Active" },
-    { id: "5", name: "Ava Morgan", role: "Owner", email: "ava.morgan@email.com", joinDate: "2023-05-22", status: "Active" },
+  const [users, setUsers] = useState<User[]>([
+    // { id: "1", name: "Sophia Carter", role: "Owner", email: "sophia.carter@email.com", joinDate: "2023-01-15", status: "Active" },
+    // { id: "2", name: "Ethan Bennett", role: "Adopter", email: "ethan.bennett@email.com", joinDate: "2022-11-20", status: "Active" },
+    // { id: "3", name: "Olivia Hayes", role: "Owner", email: "olivia.hayes@email.com", joinDate: "2023-03-05", status: "Pending" },
+    // { id: "4", name: "Liam Foster", role: "Adopter", email: "liam.foster@email.com", joinDate: "2022-09-10", status: "Active" },
+    // { id: "5", name: "Ava Morgan", role: "Owner", email: "ava.morgan@email.com", joinDate: "2023-05-22", status: "Active" },
   ]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const allUser = await fetchData('/user');
+      setUsers(allUser)
+    }
+
+    fetchUsers();
+    console.log(users)
+  }, [])
 
   const filtered = useMemo(() => {
     return users.filter((u) => {
-      const matchQuery = `${u.name} ${u.email}`.toLowerCase().includes(query.toLowerCase());
-      const matchStatus = statusFilter === "ALL" ? true : u.status === statusFilter;
+      const matchQuery = `${u.user_profile.first_name} ${u.user_profile.last_name} ${u.email}`.toLowerCase().includes(query.toLowerCase());
+      const matchStatus = statusFilter === "ALL" ? true : u.status === (statusFilter === "Active");
       return matchQuery && matchStatus;
     });
   }, [users, query, statusFilter]);
 
-  function approve(id: string) {
-    setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, status: "Active" } : u)));
+  async function approve (id: number) {
+    try {
+      const response = await axios.put(`${base_api}/user/unban/${id}`, {}, {withCredentials: true});
+      console.log(response);
+      setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, status: true } : u)));
+    } catch (err) {
+      alert("Approve ไม่สำเร็จ")
+      console.log(err)
+    }
   }
-  function reject(id: string) {
+  async function reject(id: number) {
     // For Pending users, reject = delete user request
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+    try {
+      const response = await axios.put(`${base_api}/user/ban/${id}`, {}, {withCredentials: true});
+      console.log(response);
+      setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, status: false } : u)));
+    } catch (err) {
+      alert("Reject ไม่สำเร็จ")
+      console.log(err)
+    }
   }
-  function deleteUser(id: string) {
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+  async function deleteUser(id: number) {
+    try {
+      const response = await axios.delete(`${base_api}/user/${id}`, {withCredentials: true});
+      console.log(response);
+      setUsers((prev) => prev.filter((u) => u.id !== id));
+    } catch (err) {
+      alert("Delete user ไม่สำเร็จ")
+      console.log(err)
+    }
   }
 
   return (
@@ -90,7 +126,7 @@ export default function AdminUsersPage() {
               <span className="absolute left-3 top-1/2 -translate-y-1/2">🔍</span>
             </div>
 
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as any)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as UserStatus)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
               <option>ALL</option>
               <option>Active</option>
               <option>Pending</option>
@@ -113,23 +149,24 @@ export default function AdminUsersPage() {
               <tbody>
                 {filtered.map((u) => (
                   <tr key={u.id} className="odd:bg-white even:bg-pink-50/40">
-                    <td className="px-4 py-3">{u.name}</td>
+                    <td className="px-4 py-3">{u.user_profile.first_name} {u.user_profile.last_name}</td>
                     <td className="px-4 py-3">{u.email}</td>
-                    <td className="px-4 py-3">{u.joinDate}</td>
+                    <td className="px-4 py-3">{u.createdAt}</td>
                     <td className="px-4 py-3">
-                      {u.status === "Active" && <span className="text-green-600">Active</span>}
-                      {u.status === "Pending" && <span className="text-yellow-700">Pending</span>}
+                      {u.status && <span className="text-green-600">Active</span>}
+                      {u.status == false && <span className="text-yellow-700">Pending</span>}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        {u.status === "Pending" ? (
+                        {u.status == false ? (
                           <>
-                            <button onClick={() => reject(u.id)} className="rounded-full bg-red-100 hover:bg-red-200 px-3 py-1 text-xs text-red-700">Reject</button>
+                            <button onClick={() => deleteUser(u.id)} className="rounded-full bg-gray-200 hover:bg-gray-300 px-3 py-1 text-xs text-gray-800">Delete</button>
                             <button onClick={() => approve(u.id)} className="rounded-full bg-green-200 hover:bg-green-300 px-3 py-1 text-xs text-green-900">Approve</button>
                           </>
                         ) : (
                           <>
                             <button onClick={() => deleteUser(u.id)} className="rounded-full bg-gray-200 hover:bg-gray-300 px-3 py-1 text-xs text-gray-800">Delete</button>
+                            <button onClick={() => reject(u.id)} className="rounded-full bg-red-100 hover:bg-red-200 px-3 py-1 text-xs text-red-700">Reject</button>
                           </>
                         )}
                       </div>

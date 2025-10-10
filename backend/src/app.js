@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require("express");
 const prometheus = require("./utils/metrics");
 const responseTime = require("response-time");
+const cors = require("cors")
 
 const allowedOrigins = [process.env.FRONTEND_URL];
 const multer = require('multer');
@@ -17,42 +18,19 @@ const cookieParser = require('cookie-parser')
 
 const app = express();
 
-// before upload image is here
-
-// const { uploadFile } = require('../uploadFile')
-// const { upload }  = require('../middleware.js')
-
-// app.post('/upload', upload.single('image'), async (req, res) => {
-//     // https://storage.cloud.google.com/hometail/handsome-eiei.jpg
-//     try{
-//         // ไม่มีไฟล์
-//         if (!req.file){
-//             return res.status(400).json({ message: "ไม่พบไฟล์"});
-//         }
-        
-//         const fileName = req.file.filename
-//         const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
-//         fs.unlinkSync(req.file.path);
-//         res.status(200).json(result);
-//     } catch (error){
-//         res.status(500).json({ message: error.message });
-//     }
-    
-    
-// })
-
-
 //json
 app.use(express.json());
 app.use(cookieParser())
-//cors ต้องแก้ตอนลง production
-app.use((req, res, next) => {
-      res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-    next();
-});
+// กำหนด options ของ CORS
+const corsOptions = {
+  origin: 'http://localhost:3000', // อนุญาตเฉพาะ origin นี้
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // อนุญาตเมธอดเหล่านี้
+  allowedHeaders: ['Content-Type'], // อนุญาต header เหล่านี้
+  credentials: true // อนุญาตการส่ง credentials (เช่น cookie)
+};
+
+// ใช้ cors middleware เป็นอันดับแรกๆ
+app.use(cors(corsOptions));
 
 // Prometheus response time
 app.use(
