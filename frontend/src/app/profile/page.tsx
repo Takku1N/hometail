@@ -39,7 +39,7 @@ export default async function ProfilePage() {
           {/* Profile card */}
           <div className="rounded-2xl bg-white shadow p-6">
             <div className="flex flex-col items-center text-center">
-              <Image src="/images/hometail_signin.png" alt="avatar" width={120} height={120} className="rounded-full border" />
+              <img src={userData.user_profile.image_url} alt="avatar" width={120} height={120} className="rounded-full border" />
               <h2 className="mt-4 text-xl font-bold">{userData.user_profile.first_name} {userData.user_profile.last_name}</h2>
               <span className="text-green-600 mt-1">{userData.role}</span>
               <Link href="/profile/edit" className="mt-4 inline-block rounded-lg bg-pink-100 hover:bg-pink-200 px-4 py-2">Edit Profile</Link>

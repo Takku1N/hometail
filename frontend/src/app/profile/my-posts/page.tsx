@@ -3,11 +3,27 @@
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+import { PetInterface, PetProfileInterface } from "@/interface";
 
 export default function MyPostsPage() {
+
+  const [allPet, setAllPet] = useState<PetInterface[]>([])
+  useEffect(() => {
+      const fetchPet = async () => {
+        const base_api = process.env.NEXT_PUBLIC_API_URL
+        const response = await axios.get(`${base_api}/pet/owner`, {withCredentials: true})
+        setAllPet(response.data)
+      }
+      fetchPet()
+  }, [])
+  
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
+      {JSON.stringify(allPet)}
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-extrabold">My Posts</h1>
@@ -19,34 +35,29 @@ export default function MyPostsPage() {
 
         {/* Filters */}
         <div className="mt-4 flex items-center gap-3">
-          <Chip active>ALL</Chip>
+          <button className="px-3 text-green-500 bg-green-100 rounded-lg"> All </button>
           <Chip>Available</Chip>
           <Chip>Adopted</Chip>
         </div>
 
         {/* Post cards */}
         <div className="mt-6 space-y-6">
-          <PostCard
-            image="/images/husky.jpg"
-            title="iQ"
-            subtitle="2 ขวบ • เพศผู้ • Beagle"
-            location="กรุงเทพ"
-            desc="ขี้เล่น ร่าเริง ชอบวิ่งเล่น เข้ากับคนง่าย"
-            badge="Open for Adoption"
-            interested={25}
-            dimmed={false}
-          />
 
-          <PostCard
-            image="/images/hometail_icon.png"
-            title="Lukplub"
-            subtitle="4 ขวบ • เพศผู้ • Siberian Husky"
-            location="กรุงเทพ"
-            desc="ขี้เล่น ดื้อบ้างเล็กน้อย แต่รักเจ้าของ"
-            badge="Adopted"
-            interested={12}
-            dimmed
-          />
+          {allPet.map((pet) => (
+            <PostCard
+            image={pet.profile.image_url}
+            title={pet.profile.name}
+            location={pet.profile.location}
+            desc={pet.profile.description}
+            adopted={pet.profile.adopted}
+            age={pet.profile.age}
+            gender={pet.profile.gender}
+            breed={pet.profile.breed}
+            key={pet.id}/>
+          ))}
+          
+
+          
         </div>
       </div>
     </main>
@@ -66,45 +77,46 @@ function Chip({ children, active = false }: { children: React.ReactNode; active?
 function PostCard({
   image,
   title,
-  subtitle,
   location,
   desc,
-  badge,
-  interested,
-  dimmed,
+  adopted,
+  age,
+  gender,
+  breed,
 }: {
   image: string;
   title: string;
-  subtitle: string;
   location: string;
   desc: string;
-  badge: string;
-  interested: number;
-  dimmed?: boolean;
+  adopted?: boolean;
+  age: number
+  gender: string
+  breed: string
 }) {
   return (
     <div
-      className={`w-full rounded-2xl bg-white shadow border overflow-hidden flex items-stretch ${dimmed ? "opacity-60" : ""}`}
+      className={`w-full rounded-2xl bg-white shadow border overflow-hidden flex items-stretch `}
     >
       <div className="relative w-[260px] h-[180px] md:w-[300px] md:h-[200px]">
-        <Image src={image} alt={title} fill className="object-cover" />
+        <img src={image} alt={title} className="object-cover" />
       </div>
       <div className="flex-1 p-4 md:p-6">
         <div className="flex items-start justify-between">
-          <div className="text-green-600 text-sm font-semibold">{badge}</div>
-          <div className="text-xs text-gray-600">{interested} Interested</div>
         </div>
+        {adopted ? (
+          <h2 className="text-lg text-green-500"> Adopted </h2>
+        ): null}
         <h3 className="mt-1 text-xl font-extrabold">🐶 {title}</h3>
-        <div className="text-sm text-gray-800">{subtitle}</div>
+        <div className="text-sm text-gray-800">{age} ปี- {gender} - {breed} </div>
         <div className="text-sm text-gray-700 mt-1">📍 {location}</div>
         <p className="text-sm text-gray-600 mt-1">{desc}</p>
 
         <div className="mt-3 flex items-center gap-3">
-          <button className="flex items-center gap-2 rounded-full bg-green-200 px-4 py-2 text-gray-900">
+          <button className="flex items-center gap-2 rounded-full bg-green-200 px-4 py-2 text-gray-900 cursor-pointer">
             <span>✏️</span>
             <span>Edit</span>
           </button>
-          <button className="rounded-full bg-red-200 px-4 py-2 text-gray-900">Delete</button>
+          <button className="rounded-full bg-red-200 px-4 py-2 text-gray-900 cursor-pointer">Delete</button>
         </div>
       </div>
     </div>
