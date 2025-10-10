@@ -57,8 +57,9 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 
-                echo "--- Deploying by docker compose up ---"
-                sh "TAG=${TAG} docker compose up -d --force-recreate"
+                sh "TAG=${TAG} docker compose down -v"
+                echo "--- Deploying by docker compose up"
+                sh "TAG=${TAG} docker compose up -d"
             }
         }
     }

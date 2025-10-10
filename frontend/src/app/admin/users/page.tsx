@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 type UserStatus = "Active" | "Pending";
+type FilterStatus = "ALL" | UserStatus;
 
 interface AdminUser {
   id: string;
@@ -17,7 +18,7 @@ interface AdminUser {
 
 export default function AdminUsersPage() {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | UserStatus>("ALL");
+  const [statusFilter, setStatusFilter] = useState<FilterStatus>("ALL");
 
   const [users, setUsers] = useState<AdminUser[]>([
     { id: "1", name: "Sophia Carter", role: "Owner", email: "sophia.carter@email.com", joinDate: "2023-01-15", status: "Active" },
@@ -90,7 +91,7 @@ export default function AdminUsersPage() {
               <span className="absolute left-3 top-1/2 -translate-y-1/2">🔍</span>
             </div>
 
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as any)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as FilterStatus)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
               <option>ALL</option>
               <option>Active</option>
               <option>Pending</option>

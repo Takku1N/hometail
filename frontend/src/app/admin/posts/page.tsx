@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 
 type PostStatus = "adopted" | "not-adopted";
+type FilterStatus = "ALL" | PostStatus;
+type FilterSpecies = "ALL" | "Dog" | "Cat";
 
 interface AdminPost {
   id: string;
@@ -16,8 +18,8 @@ interface AdminPost {
 
 export default function AdminPostsPage() {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | PostStatus>("ALL");
-  const [speciesFilter, setSpeciesFilter] = useState<"ALL" | "Dog" | "Cat">("ALL");
+  const [statusFilter, setStatusFilter] = useState<FilterStatus>("ALL");
+  const [speciesFilter, setSpeciesFilter] = useState<FilterSpecies>("ALL");
 
   const [posts, setPosts] = useState<AdminPost[]>([
     { id: "1", petName: "Buddy", owner: "Sarah Miller", species: "Dog", status: "not-adopted" },
@@ -83,13 +85,13 @@ export default function AdminPostsPage() {
               <span className="absolute left-3 top-1/2 -translate-y-1/2">🔍</span>
             </div>
 
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as any)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as FilterStatus)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
               <option>ALL</option>
               <option>adopted</option>
               <option>not-adopted</option>
             </select>
 
-            <select value={speciesFilter} onChange={(e) => setSpeciesFilter(e.target.value as any)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
+            <select value={speciesFilter} onChange={(e) => setSpeciesFilter(e.target.value as FilterSpecies)} className="rounded-full border border-pink-200 bg-white px-4 py-2 shadow-sm">
               <option>ALL</option>
               <option>Dog</option>
               <option>Cat</option>
