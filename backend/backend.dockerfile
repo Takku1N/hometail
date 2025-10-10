@@ -1,39 +1,46 @@
-# --- Stage 1: Builder ---
-# Stage นี้จะใช้สำหรับติดตั้ง dependencies ทั้งหมดและ build โปรเจกต์
+# STAGE 1: Builder - สภาพแวดล้อมสำหรับ build ที่มี devDependencies ครบ
 FROM node:20-alpine AS builder
-
 WORKDIR /app
 
-# Copy package files และติดตั้ง dependencies ทั้งหมด (รวม devDependencies)
+# Copy package.json และ lock file
 COPY package*.json ./
+
+# ติดตั้ง dependencies ทั้งหมด (รวม devDependencies)
 RUN npm install
 
-# Copy source code ที่เหลือ
+# Copy source code และ prisma schema
 COPY . .
 
-# รัน prisma generate (ทำใน stage นี้เพราะเรามี devDependencies ครบ)
+# Generate Prisma Client
 RUN npx prisma generate
 
-
-# --- Stage 2: Production ---
-# Stage นี้คือ image สุดท้ายที่เราจะนำไปใช้งานจริง
+# STAGE 2: Production - สภาพแวดล้อมสำหรับใช้งานจริงที่สะอาดและเล็ก
 FROM node:20-alpine AS production
-
 WORKDIR /app
 
-# Copy ไฟล์ทั้งหมดจาก builder stage มาก่อน
-# ซึ่งจะรวมถึง source code, prisma schema, และ node_modules ที่มี devDependencies
-COPY --from=builder /app .
+# Copy package.json และ lock file
+COPY package*.json ./
 
-# รัน npm install --production อีกครั้ง
-# เพื่อลบ devDependencies ออก และทำให้ node_modules มีขนาดเล็กลงสำหรับ production
+# ติดตั้งเฉพาะ production dependencies
 RUN npm install --production
 
-# ทำให้ไฟล์ entrypoint.sh (ที่ถูก copy มาแล้ว) สามารถ execute ได้
-RUN chmod +x ./entrypoint.sh
+# --- ส่วนที่แก้ไข ---
+# Copy ไฟล์ entrypoint เข้าไปก่อน
+COPY entrypoint.sh .
 
+# **สำคัญ: เพิ่มสิทธิ์ในการรัน (execute permission) ให้กับ entrypoint.sh**
+RUN chmod +x ./entrypoint.sh
+# --------------------
+
+# Copy โค้ดที่ build และ generate เสร็จแล้วจาก Stage 'builder'
+# สำคัญ: Copy source code และ Prisma client ที่ generate แล้ว
+COPY --from=builder /app .
+
+# Expose port
 EXPOSE 4000
 
+# กำหนดให้ Entrypoint ทำงานก่อนเสมอ
 ENTRYPOINT ["./entrypoint.sh"]
-CMD ["npm", "start"]
 
+# คำสั่ง default ที่จะถูกส่งไปให้ entrypoint เพื่อ start server
+CMD ["npm", "start"]
