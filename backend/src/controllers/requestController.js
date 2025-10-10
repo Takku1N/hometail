@@ -12,6 +12,19 @@ exports.getRequestByOwnerId = async (req, res) => {
                     owner_id: Number(owner_id)
                 },
                 status: 'Pending'
+            },
+            include: {
+                requester: {
+                    include: {
+                        user_profile: true
+                    }
+                },
+                pet: {
+                    include: {
+                        profile: true
+                    }
+                }
+
             }
         })
 
