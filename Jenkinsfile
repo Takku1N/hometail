@@ -46,6 +46,20 @@ pipeline {
         //     }
         // }
 
+        stage('Prepare Build Context') {
+            steps {
+                echo "--- Setting execute permissions for entrypoint scripts ---"
+                // ตรวจสอบ permission ปัจจุบัน (สำหรับ Debug)
+                sh "ls -l backend/entrypoint.sh"
+
+                // **สำคัญ: บังคับให้ไฟล์ entrypoint.sh มีสิทธิ์ในการรัน**
+                sh "chmod +x backend/entrypoint.sh"
+
+                // ตรวจสอบ permission อีกครั้งหลังแก้ไข
+                sh "ls -l backend/entrypoint.sh"
+            }
+        }
+
         stage('Build Docker Images') {
             steps {
                 
