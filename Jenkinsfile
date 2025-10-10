@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // เราจะ checkout โค้ดแค่ใน stage นี้ที่เดียว
-                git branch: 'plub_test', url: 'https://github.com/Takku1N/hometail.git'
+                git branch: 'prod', url: 'https://github.com/Takku1N/hometail.git'
                 echo "Checked out code successfully."
             }
         }
