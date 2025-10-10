@@ -111,15 +111,17 @@ exports.unbanUser = async (req, res) => {
 exports.updateMyProfile = async (req, res) => {
     const user_id = req.user.user_id
     
+    // ไม่มีไฟล์
     if (!req.file){
-        return res.status(400).json({ message: "ไม่พบไฟล์"});
+        img_url = null
+    } else {
+        // ไม่มีไฟล์
+        const fileName = req.file.filename
+        const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
+        fs.unlinkSync(req.file.path);
+        image_url = process.env.BASE_BUCKET_URL + fileName
     }
     
-    const fileName = req.file.filename
-    const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
-    fs.unlinkSync(req.file.path);
-    image_url = process.env.BASE_BUCKET_URL + fileName
-
     try{
         const result = await prisma.$transaction(async (prisma) => {
             const updateUser = await prisma.user.update({
