@@ -56,10 +56,15 @@ pipeline {
 
         stage('Deploy to Production') {
             steps {
-                
-                sh "TAG=${TAG} docker compose down -v frontend backend1 backend2"
-                sh "TAG=${TAG} docker compose down grafana prometheus db nginx node-exporter"
-                echo "--- Deploying by docker compose up"
+                echo "--- Stopping and removing stateless services ---"
+                // ลบ container ที่ไม่เก็บข้อมูล พร้อมลบ anonymous volumes (-v)
+                sh "TAG=${TAG} docker compose down -v frontend backend1 backend2 nginx node-exporter"
+
+                echo "--- Stopping stateful services (keeping data) ---"
+                // ลบ container ที่เก็บข้อมูล โดย **ไม่ลบ** named volumes (ไม่มี -v)
+                sh "TAG=${TAG} docker compose down grafana prometheus db"
+
+                echo "--- Deploying all services by docker compose up ---"
                 sh "TAG=${TAG} docker compose up -d"
             }
         }
