@@ -18,6 +18,8 @@ export default function PetListingFormPage() {
     medicalNotes: "",
     personality: "",
   });
+
+  
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -36,7 +38,8 @@ export default function PetListingFormPage() {
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    router.push("/profile/my-posts");
+    console.log("📋 Form data:", form);
+    // router.push("/profile/my-posts");
   }
 
   return (
