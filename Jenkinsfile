@@ -57,7 +57,8 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 
-                sh "TAG=${TAG} docker compose down -v"
+                sh "TAG=${TAG} docker compose down -v frontend backend1 backend2"
+                sh "TAG=${TAG} docker compose down grafana prometheus db nginx node-exporter"
                 echo "--- Deploying by docker compose up"
                 sh "TAG=${TAG} docker compose up -d"
             }
