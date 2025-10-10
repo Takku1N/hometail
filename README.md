@@ -9,3 +9,4 @@
 # path ณ ปัจจุบัน
 * /  (หน้า Home)
 * /auth  (หน้า Authen)
+
