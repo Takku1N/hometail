@@ -129,18 +129,26 @@ exports.unbanUser = async (req, res) => {
 
 exports.updateMyProfile = async (req, res) => {
     const user_id = req.user.user_id
-    
-    // ไม่มีไฟล์
-    if (!req.file){
-        img_url = null
-    } else {
-        // ไม่มีไฟล์
+    let image_url;
+    if (req.file){
         const fileName = req.file.filename
         const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
         fs.unlinkSync(req.file.path);
         image_url = process.env.BASE_BUCKET_URL + fileName
+    } else{
+        try{
+            const currentProfile = await prisma.userProfile.findUnique({
+                where: {
+                    user_id: Number(user_id)
+                }
+            })
+
+            image_url  = currentProfile.image_url
+        } catch (error){
+            res.status(500).json({ message: error.message });
+        }
     }
-    
+
     try{
         const result = await prisma.$transaction(async (prisma) => {
             const updateUser = await prisma.user.update({
@@ -171,6 +179,22 @@ exports.updateMyProfile = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // exports.getUsers = async (req, res) => {
