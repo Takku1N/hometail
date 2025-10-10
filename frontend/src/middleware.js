@@ -35,7 +35,20 @@ export async function middleware(req) {
       return NextResponse.redirect(new URL("/auth", req.url));
     }
 
+    // ตรวจสถานะ user ว่า Approve มั้ย
+    if (!data.userData.status) {
+      console.log("ยังไม่ Approve → redirect /auth");
+      return NextResponse.redirect(new URL("/auth", req.url))
+    }
+
+    // Check for Admin role on profile pages
+    if (pathname.startsWith('/profile') && data.userData?.role === 'Admin') {
+      console.log("Admin user on /profile → redirecting to /admin");
+      return NextResponse.redirect(new URL('/admin/users', req.url));
+    }
+
     console.log("Login แล้ว ผ่าน middleware ได้");
+
     return NextResponse.next();
   } catch (error) {
     console.log("Middleware error:", error.message);

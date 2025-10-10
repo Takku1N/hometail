@@ -10,6 +10,27 @@ const fs = require('fs');
 exports.getAllPet = async (req, res) => {
     try {
         const pets = await prisma.petProfile.findMany({
+            include: {
+                pet: {
+                    include: {
+                        owner: {
+                            include: {
+                                user_profile: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        return res.status(200).json(pets);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+exports.getUnAdoptedPet = async (req, res) => {
+    try {
+        const pets = await prisma.petProfile.findMany({
             where: {
                 adopted: false
             },

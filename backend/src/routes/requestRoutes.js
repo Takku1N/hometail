@@ -12,11 +12,11 @@ router.put('/request/reject/:id',  requestController.rejectRequest);
 
 // get request ที่คนอื่นส่งมาให้เรา
 router.get('/request/owner', authenticateToken, requestController.getRequestByOwnerId);
+router.get('/request', authenticateToken, requestController.getRequests);
 
 // get request ที่เราเป็นคนส่งไป
 router.get('/request/myrequest', authenticateToken, requestController.getMyRequest);
 
 router.post('/request', authenticateToken, requestController.createRequest);
-
 
 module.exports = router;

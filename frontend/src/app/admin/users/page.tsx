@@ -4,27 +4,17 @@ import fetchData from "@/app/fetchData";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
-import { RoleInterface, UserProfileInterface } from "@/interface"
+import { RoleInterface, UserInterface } from "@/interface"
 import axios from "axios";
 
 const base_api = process.env.NEXT_PUBLIC_API_URL;
-
 type UserStatus = "Active" | "Pending";
-
-interface User {
-  id: number;
-  role: RoleInterface;
-  email: string;
-  createdAt?: string;
-  status: boolean;
-  user_profile: UserProfileInterface;
-}
 
 export default function AdminUsersPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | UserStatus>("ALL");
 
-  const [users, setUsers] = useState<User[]>([
+  const [users, setUsers] = useState<UserInterface[]>([
     // { id: "1", name: "Sophia Carter", role: "Owner", email: "sophia.carter@email.com", joinDate: "2023-01-15", status: "Active" },
     // { id: "2", name: "Ethan Bennett", role: "Adopter", email: "ethan.bennett@email.com", joinDate: "2022-11-20", status: "Active" },
     // { id: "3", name: "Olivia Hayes", role: "Owner", email: "olivia.hayes@email.com", joinDate: "2023-03-05", status: "Pending" },
@@ -44,9 +34,10 @@ export default function AdminUsersPage() {
 
   const filtered = useMemo(() => {
     return users.filter((u) => {
-      const matchQuery = `${u.user_profile.first_name} ${u.user_profile.last_name} ${u.email}`.toLowerCase().includes(query.toLowerCase());
+      const matchQuery = `${u.user_profile?.first_name || ""} ${u.user_profile?.last_name || ""} ${u.email}`.toLowerCase().includes(query.toLowerCase());
       const matchStatus = statusFilter === "ALL" ? true : u.status === (statusFilter === "Active");
-      return matchQuery && matchStatus;
+      const matchRole = u.role === "User"
+      return matchQuery && matchStatus && matchRole;
     });
   }, [users, query, statusFilter]);
 
@@ -93,9 +84,9 @@ export default function AdminUsersPage() {
               <span>👥</span>
               <span className="font-semibold">Users</span>
             </Link>
-            <Link href="/admin/posts" className="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-pink-50">
+            <Link href="/admin/pets" className="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-pink-50">
               <span>🖼️</span>
-              <span className="font-semibold">Posts</span>
+              <span className="font-semibold">Pets</span>
             </Link>
           </nav>
         </div>
@@ -149,7 +140,7 @@ export default function AdminUsersPage() {
               <tbody>
                 {filtered.map((u) => (
                   <tr key={u.id} className="odd:bg-white even:bg-pink-50/40">
-                    <td className="px-4 py-3">{u.user_profile.first_name} {u.user_profile.last_name}</td>
+                    <td className="px-4 py-3">{u.user_profile?.first_name || ""} {u.user_profile?.last_name || ""}</td>
                     <td className="px-4 py-3">{u.email}</td>
                     <td className="px-4 py-3">{u.createdAt}</td>
                     <td className="px-4 py-3">

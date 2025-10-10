@@ -14,6 +14,7 @@ router.get('/pet/owner', authenticateToken, petController.getPetByOwnerId);
 
 
 router.get('/pet', authenticateToken, petController.getAllPet);
+router.get('/pet/unadopted', authenticateToken, petController.getUnAdoptedPet);
 
 router.post('/pet', authenticateToken, upload.single('image'), petController.createPet);
 

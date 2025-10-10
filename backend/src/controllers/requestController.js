@@ -3,6 +3,30 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+exports.getRequests = async (req, res) => {
+    try{
+        const requests = await prisma.request.findMany({
+            include: {
+                requester: {
+                    include: {
+                        user_profile: true
+                    }
+                },
+                pet: {
+                    include: {
+                        profile: true
+                    }
+                }
+
+            }
+        })
+
+        res.status(200).json(requests);
+    } catch (error){
+        res.status(500).json({ error: error.message });
+    }
+}
+
 exports.getRequestByOwnerId = async (req, res) => {
     const owner_id = req.user.user_id;
     try{
