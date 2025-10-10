@@ -20,12 +20,12 @@ export const databaseResponseTimeHistogram = new client.Histogram({
 export function startMetricsServer() {
   client.collectDefaultMetrics({ timeout: 5000 });
 
-  app.get("/api/metrics", async (req, res) => {
+  app.get("/metrics", async (req, res) => {
     res.set("Content-Type", client.register.contentType);
     res.send(await client.register.metrics());
   });
 
-  app.listen(9100, "0.0.0.0", () => {
-    console.log("Metrics server started at http://0.0.0.0:9100");
+  app.listen(9091, "0.0.0.0", () => {
+    console.log("Metrics server started at http://0.0.0.0:9091");
   });
 }

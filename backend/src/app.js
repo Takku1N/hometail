@@ -4,16 +4,15 @@ const express = require("express");
 const prometheus = require("./utils/metrics");
 const responseTime = require("response-time");
 
-const allowedOrigins = [process.env.FRONTEND_URL];
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
 const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes")
-const petRoutes = require("./routes/petRoutes")
-const requestRoutes = require("./routes/requestRoutes")
-const cookieParser = require('cookie-parser')
+const userRoutes = require("./routes/userRoutes");
+const petRoutes = require("./routes/petRoutes");
+const requestRoutes = require("./routes/requestRoutes");
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -47,14 +46,11 @@ app.use(express.json());
 app.use(cookieParser())
 //cors ต้องแก้ตอนลง production
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-    }
-    next();
+  res.setHeader('Access-Control-Allow-Origin', "http://localhost");
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
 });
 
 // Prometheus response time
@@ -75,7 +71,7 @@ app.use(
 );
 
 // REST API
-app.use("/api", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", petRoutes);
 app.use("/api", requestRoutes);

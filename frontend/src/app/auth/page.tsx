@@ -8,7 +8,7 @@ import { tree } from "next/dist/build/templates/app-page";
 
 export default function AuthPage() {
   const router = useRouter();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost/api';
 
   const [isSignIn, setIsSignIn] = useState(true);
   const [isSetEmail, setIsSetEmail] = useState(true);

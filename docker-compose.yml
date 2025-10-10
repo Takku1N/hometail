@@ -17,18 +17,14 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost/api
-      - NODE_ENV=development # สำหรับ dev
-      - CHOKIDAR_USEPOLLING=true
     restart: always
     depends_on:
-      - backend
+      - backend1
     networks:
       - frontend_network
 
-  backend:
-    container_name: backend-hometail
+  backend1:
+    container_name: backend-hometail1
     image: backend-hometail
     build:
       context: ./backend
@@ -47,13 +43,31 @@ services:
       - backend_network
       - monitoring
 
+  backend2:
+    container_name: backend-hometail2
+    image: backend-hometail
+    build:
+      context: ./backend
+      dockerfile: backend.dockerfile
+    env_file:
+      - ./backend/.env
+    ports:
+      - 4001:4000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    networks:
+      - frontend_network
+      - backend_network
+      - monitoring
+
   db:
     image: postgres:14
     restart: always
-    environment:
-      POSTGRES_DB: hometail
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 1234
+    env_file:
+      - ./backend/.db.env
     ports:
       - "5433:5432"
     volumes:
@@ -70,7 +84,8 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - frontend
-      - backend
+      - backend1
+      - backend2
     networks:
       - frontend_network
       - backend_network
@@ -90,16 +105,32 @@ services:
     container_name: grafana
     ports:
       - 3001:3000
-    environment:
-      - GF_SECURITY_ADMIN_USER=grafana_admin
-      - GF_SECURITY_ADMIN_PASSWORD=1234
-      - GF_USERS_ALLOW_SIGN_UP=false
+    env_file:
+      - ./.grafana.env
     volumes:
       - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
     networks:
       - monitoring
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100" # Port มาตรฐานของ Node Exporter
+    networks:
+      - monitoring # 👈 ต้องอยู่ใน network เดียวกับ Prometheus
 
 volumes:
   hometail_pg_data:

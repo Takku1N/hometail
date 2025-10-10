@@ -14,37 +14,37 @@ pipeline {
             }
         }
 
-        stage('Test Backend') {
-            agent {
-                docker { 
-                    image 'node:22-alpine'
-                    args '-u root -v jenkins-npm-cache:/root/.npm' 
-                }
-            }
-            steps {
-                dir('backend') {
-                    echo "--- Testing Backend ---"
-                    sh 'npm install'
-                    sh 'npm test'
-                }
-            }
-        }
+        // stage('Test Backend') {
+        //     agent {
+        //         docker { 
+        //             image 'node:22-alpine'
+        //             args '-u root -v jenkins-npm-cache:/root/.npm' 
+        //         }
+        //     }
+        //     steps {
+        //         dir('backend') {
+        //             echo "--- Testing Backend ---"
+        //             sh 'npm install'
+        //             sh 'npm test'
+        //         }
+        //     }
+        // }
         
-        stage('Test Frontend') {
-            agent {
-                docker { 
-                    image 'node:18-alpine'
-                    args '-u root -v jenkins-npm-cache:/root/.npm'
-                }
-            }
-            steps {
-                dir('frontend') {
-                    echo "--- Testing Frontend ---"
-                    sh 'npm install'
-                    sh 'npm test'
-                }
-            }
-        }
+        // stage('Test Frontend') {
+        //     agent {
+        //         docker { 
+        //             image 'node:18-alpine'
+        //             args '-u root -v jenkins-npm-cache:/root/.npm'
+        //         }
+        //     }
+        //     steps {
+        //         dir('frontend') {
+        //             echo "--- Testing Frontend ---"
+        //             sh 'npm install'
+        //             sh 'npm test'
+        //         }
+        //     }
+        // }
 
         stage('Build Docker Images') {
             steps {

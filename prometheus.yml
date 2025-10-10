@@ -4,5 +4,9 @@ global:
 scrape_configs:
   - job_name: 'backend'
     static_configs:
-      - targets: ['backend-hometail:9100']
-    metrics_path: /api/metrics
+      - targets: ['backend-hometail:9091']
+    metrics_path: /metrics
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100'] # 👈 'node-exporter' คือชื่อ service ใน docker-compose
