@@ -24,17 +24,14 @@ COPY package*.json ./
 # ติดตั้งเฉพาะ production dependencies
 RUN npm install --production
 
-# --- ส่วนที่แก้ไข ---
-# Copy ไฟล์ entrypoint เข้าไปก่อน
-COPY entrypoint.sh .
+# Copy โค้ดที่ build และ generate เสร็จแล้วทั้งหมดจาก Stage 'builder'
+COPY --from=builder /app .
 
-# **สำคัญ: เพิ่มสิทธิ์ในการรัน (execute permission) ให้กับ entrypoint.sh**
+# --- ส่วนที่แก้ไข ---
+# **สำคัญ: ย้าย chmod มาไว้หลังสุด**
+# เพื่อให้แน่ใจว่าเรากำลังให้สิทธิ์กับไฟล์ entrypoint.sh เวอร์ชันสุดท้าย
 RUN chmod +x ./entrypoint.sh
 # --------------------
-
-# Copy โค้ดที่ build และ generate เสร็จแล้วจาก Stage 'builder'
-# สำคัญ: Copy source code และ Prisma client ที่ generate แล้ว
-COPY --from=builder /app .
 
 # Expose port
 EXPOSE 4000
