@@ -44,7 +44,7 @@ model Pet {
   owner         User          @relation("owner_pet" ,fields: [owner_id], references: [id])
   // annoucer_id   Int?
   // annoucer      User?         @relation("announcer_pet", fields: [annoucer_id], references: [id])
-  image_url     String
+  
   profile       PetProfile?
   requests      Request[]     @relation("pet")
 }
@@ -64,6 +64,7 @@ model PetProfile {
   medical_note  String?
   species      PetType
   adopted       Boolean       @default(false)
+  image_url     String
 }
 
 model Request {

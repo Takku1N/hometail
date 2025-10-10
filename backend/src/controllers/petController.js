@@ -12,6 +12,9 @@ exports.getAllPet = async (req, res) => {
         const pets = await prisma.petProfile.findMany({
             where: {
                 adopted: false
+            },
+            include: {
+                pet: true
             }
         });
         return res.status(200).json(pets);
@@ -52,7 +55,6 @@ exports.createPet = async (req, res) => {
             const pet = await prisma.pet.create({
                 data: {
                     owner_id: owner_id,
-                    image_url: image_url
                 }
             })
 
@@ -70,6 +72,7 @@ exports.createPet = async (req, res) => {
                     medical_note: req.body.medical_note,
                     neutered: Boolean(req.body.neutered),
                     species : req.body.species,
+                    image_url: image_url
                 }
             })
 
