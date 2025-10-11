@@ -8,11 +8,11 @@ import { RoleInterface, UserInterface } from "@/interface"
 import axios from "axios";
 
 const base_api = process.env.NEXT_PUBLIC_API_URL;
-type UserStatus = "Active" | "Pending";
+type UserStatus = "ALL" |"Active" | "Pending";
 
 export default function AdminUsersPage() {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<FilterStatus>("ALL");
+  const [statusFilter, setStatusFilter] = useState<UserStatus>("ALL");
 
   const [users, setUsers] = useState<UserInterface[]>([]);
 

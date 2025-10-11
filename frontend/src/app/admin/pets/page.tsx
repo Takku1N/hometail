@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState, useEffect } from "react";
-import { RequestStatusInterface, PetTypeInterface, PetProfileInterface, UserInterface } from "@/interface"
+import { PetTypeInterface, PetProfileInterface } from "@/interface"
 import fetchData from "@/app/fetchData";
 import axios from "axios";
 // import { title } from "process";
