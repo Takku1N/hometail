@@ -165,13 +165,59 @@ exports.getPetByOwnerIdAdopted = async (req, res) => {
 }
 exports.updatePet = async (req, res) => {
     const pet_id = req.params.id
+    console.log(req.body)
+
+    // console.log(1)
+    let image_url;
+    if (req.file){
+        const fileName = req.file.filename
+        const result = await uploadFile(process.env.BUCKET_NAME, req.file.path, fileName)
+        fs.unlinkSync(req.file.path);
+        image_url = process.env.BASE_BUCKET_URL + fileName
+       
+
+    } else {
+        console.log("ไม่มีไฟล์")
+        try{
+
+            const petProfile = await prisma.petProfile.findUnique({
+                where: {
+                    pet_id: Number(pet_id)
+                }
+            })
+
+            image_url = petProfile.image_url
+        } catch (error){
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    console.log(image_url)
+
     try{
         const result = await prisma.petProfile.update({
-            where: { pet_id: parseInt(pet_id) },
-            data: req.body
+            where: { 
+                pet_id: Number(pet_id) 
+            },
+            data: {
+                name: req.body.name,
+                description: req.body.description,
+                location: req.body.location,
+                gender: req.body.gender,
+                age: Number(req.body.age),
+                vaccinated: req.body.vaccinated === 'true',
+                breed: req.body.breed,
+                medical_note: req.body.medical_note,
+                neutered: req.body.neutered === 'true',
+                species : req.body.species,
+                image_url: image_url
+            }
         })
+
+        console.log(3)
         return res.status(200).json(result);
     } catch (error){
+        console.log(error.message)
         res.status(500).json({ message: error.message });
     }
 }

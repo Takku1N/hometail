@@ -149,10 +149,10 @@ function PostCard({
         <p className="text-sm text-gray-600 mt-1">{desc}</p>
 
         <div className="mt-3 flex items-center gap-3">
-          <button className="flex items-center gap-2 rounded-full bg-green-200 px-4 py-2 text-gray-900 cursor-pointer">
+          <a className="flex items-center gap-2 rounded-full bg-green-200 px-4 py-2 text-gray-900 cursor-pointer" href={`/profile/my-posts/edit/${id}`}>
             <span>✏️</span>
             <span>Edit</span>
-          </button>
+          </a>
           <button className="rounded-full bg-red-200 px-4 py-2 text-gray-900 cursor-pointer" onClick={() => {deletePet(id)}}>Delete</button>
         </div>
       </div>
