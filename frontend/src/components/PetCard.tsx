@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -33,7 +33,6 @@ export default function PetCard({ pet }: PetCardProps) {
   return (
     
     <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-      {/* {JSON.stringify(pet)} */}
       <div className="relative w-full h-64 md:h-72 lg:h-80">
         <img
           src={pet.image_url}
@@ -41,7 +40,6 @@ export default function PetCard({ pet }: PetCardProps) {
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        {/* <img src={pet.image_url} alt="" /> */}
       </div>
       <div className="p-4">
         <Link href={`/pets/${pet.pet_id}`} className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:underline">

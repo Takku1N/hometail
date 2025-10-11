@@ -6,7 +6,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { redirect, usePathname } from "next/navigation";
 import axios from "axios";
 import fetchData from "@/app/fetchData";
-import { userAgent } from "next/server";
 interface NavbarProps {
   onSearchChange?: (value: string) => void;
 }
@@ -26,7 +25,7 @@ export default function Navbar({ onSearchChange }: NavbarProps) {
         <div className="mx-auto max-w-7xl px-4 py-3 grid grid-cols-[auto_1fr_auto_auto] items-center gap-4">
           {/* Logo bigger */}
           <Link href="/" className="flex items-center gap-2">
-            <img src="/images/hometail_icon.png" alt="HomeTail" width={96} height={96} className="w-12 h-12 md:w-16 md:h-16 lg:w-24 lg:h-24" />
+            <Image src="/images/hometail_icon.png" alt="HomeTail" width={96} height={96} className="w-12 h-12 md:w-16 md:h-16 lg:w-24 lg:h-24" />
           </Link>
 
           <div />
@@ -100,7 +99,7 @@ function ProfileMenu() {
         aria-expanded={open}
         className="rounded-full border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300 cursor-pointer"
       >
-        <img src="/images/hometail_signin.png" alt="Profile" width={40} height={40} className="rounded-full" />
+        <Image src="/images/hometail_signin.png" alt="Profile" width={40} height={40} className="rounded-full" />
       </button>
       {open && (
         <div

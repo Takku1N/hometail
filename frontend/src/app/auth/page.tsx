@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { tree } from "next/dist/build/templates/app-page";
+// import { tree } from "next/dist/build/templates/app-page";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -81,6 +81,7 @@ export default function AuthPage() {
         withCredentials: true,
       });
 
+      console.log(response)
       resetUseState("all");
       alert("เปลี่ยนรหัสเสร็จเรียบร้อยแล้ว");
       router.push("/auth");
@@ -176,7 +177,7 @@ export default function AuthPage() {
                 onClick={() => {setIsSetEmail(isForgetPassword?isSetEmail:true); setIsSignIn(isForgetPassword?true:false); setIsForgetPassword(false)}}
                 className="mr-4 p-2 rounded-full hover:bg-gray-200"
               >
-                <Image src="/images/back-button.png" alt="Back button" width={40} height={40} />
+                <img src="/images/back-button.png" alt="Back button" width={40} height={40} />
               </button>
             )}
 

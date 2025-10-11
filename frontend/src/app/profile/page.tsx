@@ -1,17 +1,18 @@
-import { cookies } from "next/headers";
-import fetchData from "../fetchData";
+export const dynamic = 'force-dynamic';
 
-import Image from "next/image";
+import { cookies } from "next/headers";
+
+// import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 
 import axios from "axios";
 import { getProfile } from '../../getProfile'
-import { RequestInterface, PetInterface, UserInterface, UserProfileInterface } from "@/interface";
+import { RequestInterface } from "@/interface";
 import MyRequestCard from "@/components/profile/MyRequestCard";
 
 export default async function ProfilePage() {
-  const base_api = process.env.NEXT_PUBLIC_API_URL
+  const base_api = process.env.SERVER_SIDE_API_URL
   const response = await getProfile()
   const userData = response.userData
   
@@ -24,10 +25,6 @@ export default async function ProfilePage() {
   })
   
   const allRequest = res.data
-
-  const acceptRequest = (request_id:number) => {
-      console.log(request_id)
-  }
   
   return (
     <main className="min-h-screen bg-gray-50">

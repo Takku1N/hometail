@@ -13,7 +13,7 @@ export async function middleware(req) {
 
   try {
     console.log("เช็ก login กับ backend...");
-    const base_api = process.env.NEXT_PUBLIC_API_URL;
+    const base_api = process.env.SERVER_SIDE_API_URL;
 
     const response = await fetch(`${base_api}/auth/myprofile`, {
       method: "GET",

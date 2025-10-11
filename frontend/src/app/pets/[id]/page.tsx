@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { PetProfileInterface } from "@/interface";
@@ -109,7 +109,7 @@ export default function PetDetailPage() {
           {/* Footer Actions */}
           <div className="mt-8 flex flex-col md:flex-row items-center gap-4">
             <div className="flex items-center gap-3">
-              {/* <Image
+              {/* <img
                 src="/images/hometail_signin.png"
                 alt="owner"
                 width={50}

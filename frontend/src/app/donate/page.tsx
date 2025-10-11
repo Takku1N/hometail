@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import Navbar from "@/components/Navbar";
 
 export default function DonatePage() {
@@ -15,13 +15,11 @@ export default function DonatePage() {
       {/* Hero banner */}
       <section className="w-full">
         <div className="relative mx-auto max-w-7xl h-56 md:h-72 lg:h-96 overflow-hidden rounded-xl">
-          <Image
+          <img
             src="/images/hometail_signin.png"
             alt="Donate banner"
-            fill
             className="object-cover"
             sizes="100vw"
-            priority
           />
         </div>
       </section>

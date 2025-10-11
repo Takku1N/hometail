@@ -1,13 +1,12 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { useState, useEffect, useRef } from "react"; // <--- 1. นำเข้า useRef
-import fetchData from "@/app/fetchData";
 import axios from "axios";
 
-import { UserProfileInterface, UserInterface, MyProfileResponse } from "@/interface";
+// import { MyProfileResponse } from "@/interface";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -15,9 +14,9 @@ export default function EditProfilePage() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
+  // const [address, setAddress] = useState("");
   const [profileImage, setProfileImage] = useState("")
-  const [profileData, setProfileData] = useState<MyProfileResponse>()
+  // const [profileData, setProfileData] = useState<MyProfileResponse>()
   const [currentFile, setCurrentFile] = useState<File | null>(null)
   // 2. สร้าง Ref สำหรับ File Input ที่จะซ่อน
   const fileInputRef = useRef<HTMLInputElement>(null);

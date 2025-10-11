@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { useMemo, useState, useEffect } from "react";
 import { PetTypeInterface, PetProfileInterface } from "@/interface"
 import fetchData from "@/app/fetchData";
@@ -76,7 +76,7 @@ export default function AdminPostsPage() {
           </nav>
         </div>
         <div className="flex items-center gap-3 px-2">
-          <Image src="/images/hometail_signin.png" alt="admin" width={40} height={40} className="rounded-full" />
+          <img src="/images/hometail_signin.png" alt="admin" width={40} height={40} className="rounded-full" />
           <div>
             <div className="font-semibold">Admin</div>
             <div className="text-sm text-gray-600">admin@hometail.com</div>

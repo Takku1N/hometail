@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 
@@ -18,13 +18,11 @@ export default function AboutUsPage() {
       {/* Hero banner */}
       <section className="w-full mt-6">
         <div className="relative mx-auto max-w-7xl h-56 md:h-72 lg:h-96 overflow-hidden rounded-xl">
-          <Image
+          <img
             src="/images/hometail_signin.png"
             alt="About banner"
-            fill
             className="object-cover"
             sizes="100vw"
-            priority
           />
         </div>
       </section>
@@ -44,7 +42,7 @@ export default function AboutUsPage() {
           {missionItems.map((item) => (
             <div key={item.title} className="text-center">
               <div className="relative mx-auto w-56 h-56 rounded-lg overflow-hidden shadow-md bg-white">
-                <Image src={item.image} alt={item.title} fill className="object-cover" />
+                <img src={item.image} alt={item.title} className="object-cover" />
               </div>
               <p className="mt-3 text-gray-800 font-medium">{item.title}</p>
             </div>

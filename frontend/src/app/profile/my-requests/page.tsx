@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { useState, useEffect } from "react";
-import { RequestInterface, PetInterface, UserInterface, UserProfileInterface, PetProfileInterface } from "@/interface";
+import { RequestInterface } from "@/interface";
 import axios from "axios";
 
 type Status = "Approved" | "Rejected" | "Pending";
@@ -130,13 +130,13 @@ export default function MyRequestsPage() {
   );
 }
 
-function Chip({ children, active = false }: { children: React.ReactNode; active?: boolean }) {
-  return (
-    <span className={`${active ? "bg-green-200 text-green-800" : "bg-gray-100 text-gray-700"} rounded-full px-3 py-1 text-sm font-semibold`}>
-      {children}
-    </span>
-  );
-}
+// function Chip({ children, active = false }: { children: React.ReactNode; active?: boolean }) {
+//   return (
+//     <span className={`${active ? "bg-green-200 text-green-800" : "bg-gray-100 text-gray-700"} rounded-full px-3 py-1 text-sm font-semibold`}>
+//       {children}
+//     </span>
+//   );
+// }
 
 function statusStyles(status: Status) {
   switch (status) {

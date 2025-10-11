@@ -1,18 +1,18 @@
 "use client";
 
 import fetchData from "@/app/fetchData";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
-import { RoleInterface, UserInterface } from "@/interface"
+import { UserInterface } from "@/interface"
 import axios from "axios";
 
 const base_api = process.env.NEXT_PUBLIC_API_URL;
-type UserStatus = "ALL" |"Active" | "Pending";
+type UserStatus = "Active" | "Pending";
 
 export default function AdminUsersPage() {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<UserStatus>("ALL");
+  const [statusFilter, setStatusFilter] = useState<"ALL" | UserStatus>("ALL");
 
   const [users, setUsers] = useState<UserInterface[]>([]);
 
@@ -23,7 +23,6 @@ export default function AdminUsersPage() {
     }
 
     fetchUsers();
-    console.log(users)
   }, [])
 
   const filtered = useMemo(() => {
@@ -85,7 +84,7 @@ export default function AdminUsersPage() {
           </nav>
         </div>
         <div className="flex items-center gap-3 px-2">
-          <Image src="/images/hometail_signin.png" alt="admin" width={40} height={40} className="rounded-full" />
+          <img src="/images/hometail_signin.png" alt="admin" width={40} height={40} className="rounded-full" />
           <div>
             <div className="font-semibold">Admin</div>
             <div className="text-sm text-gray-600">admin@hometail.com</div>

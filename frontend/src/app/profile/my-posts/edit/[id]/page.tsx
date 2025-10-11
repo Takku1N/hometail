@@ -6,7 +6,7 @@ import { useCallback, useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 
 import axios from "axios";
-import { PetInterface, PetProfileInterface } from "@/interface";
+// import { PetProfileInterface } from "@/interface";
 
 export default function PetListingFormPage() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function PetListingFormPage() {
   const [medicalNotes, setMedicalNotes] = useState<string>("");
   const [personality, setPersonality] = useState<string>("");
   const [currentFile, setCurrentFile] = useState<File | null>(null)
-  const [petData, setPetData] = useState<PetProfileInterface[]>([])
+  // const [petData, setPetData] = useState<PetProfileInterface[]>([])
   const params = useParams()
   const pet_id = params.id
 
@@ -31,7 +31,7 @@ export default function PetListingFormPage() {
     const getPet = async () => {
       const base_api = process.env.NEXT_PUBLIC_API_URL
       const response = await axios.get(`${base_api}/pet/${pet_id}`, {withCredentials: true})
-      setPetData(response.data)
+      // setPetData(response.data)
       setName(response.data.name)
       setAge(response.data.age)
       setGender(response.data.gender)
@@ -45,7 +45,7 @@ export default function PetListingFormPage() {
       setImagePreview(response.data.image_url)
     }
     getPet()
-  }, [])
+  }, [pet_id])
 
   // image
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -115,8 +115,6 @@ export default function PetListingFormPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
-      {JSON.stringify(currentFile)}
-      {/* {JSON.stringify(petData)} */}
       <div className="mx-auto max-w-5xl px-4 py-8">
         <div className="rounded-3xl bg-white shadow p-6 md:p-10">
           <h1 className="text-4xl font-extrabold text-center">Edit Pet Form {pet_id}</h1>

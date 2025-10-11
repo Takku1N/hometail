@@ -1,14 +1,12 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { useRouter } from "next/navigation";
-
-import { PetInterface, PetProfileInterface } from "@/interface";
+import { PetInterface } from "@/interface";
 
 export default function MyPostsPage() {
   const [allActive, setAllActive] = useState<boolean>(true)
@@ -124,7 +122,6 @@ function PostCard({
   gender: string
   breed: string
 }) {
-  const router= useRouter()
   const deletePet = async (pet_id:number) => {
     const base_api = process.env.NEXT_PUBLIC_API_URL
     await axios.delete(`${base_api}/pet/${pet_id}`, {withCredentials: true})

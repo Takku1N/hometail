@@ -85,13 +85,7 @@ exports.deleteUser = async (req, res) => {
             });
         });
 
-        res.clearCookie("loginToken", {
-            httpOnly: true,
-            sameSite: "strict",
-            path: "/"
-        })
-
-        return res.redirect("/auth");
+        res.status(200).json({ message: `ลบ User: ${userId} สำเร็จ` })
     } catch (error){
         res.status(500).json({ message: error.message });
     }

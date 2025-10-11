@@ -1,8 +1,8 @@
 'use client'
+// import Image from "next/image";
 import React from 'react'
-import { RequestInterface, PetInterface, UserInterface, UserProfileInterface } from '@/interface'
+import { RequestInterface } from '@/interface'
 import axios from 'axios'
-import fetchData from '@/app/fetchData'
 import { useRouter } from 'next/navigation'
 export default function MyRequestCard({req}: {req:RequestInterface}) {
 
@@ -11,10 +11,10 @@ export default function MyRequestCard({req}: {req:RequestInterface}) {
   const handleRequest = async (request_id:number, method:string) => {
     const base_api = process.env.NEXT_PUBLIC_API_URL
     if (method === "reject"){
-        const result = await axios.put(`${base_api}/request/reject/${request_id}`, {}, {withCredentials: true})
+        await axios.put(`${base_api}/request/reject/${request_id}`, {}, {withCredentials: true})
         router.refresh()
     } else{
-        const result = await axios.put(`${base_api}/request/approve/${request_id}`, {}, {withCredentials: true})
+        await axios.put(`${base_api}/request/approve/${request_id}`, {}, {withCredentials: true})
         router.refresh()
     }
   }

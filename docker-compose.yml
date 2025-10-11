@@ -35,9 +35,9 @@ services:
       - ./backend/.env
     ports:
       - 4000:4000
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+    # volumes:
+    #   - ./backend:/app
+    #   - /app/node_modules
     depends_on:
       - db
     networks:
@@ -55,9 +55,9 @@ services:
       - ./backend/.env
     ports:
       - 4001:4000
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+    # volumes:
+    #   - ./backend:/app
+    #   - /app/node_modules
     depends_on:
       - db
     networks:
