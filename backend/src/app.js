@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(cookieParser())
 // กำหนด options ของ CORS
 const corsOptions = {
-  origin: 'http://localhost:3000', // อนุญาตเฉพาะ origin นี้
+  origin: 'http://localhost', // อนุญาตเฉพาะ origin นี้
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // อนุญาตเมธอดเหล่านี้
   allowedHeaders: ['Content-Type'], // อนุญาต header เหล่านี้
   credentials: true // อนุญาตการส่ง credentials (เช่น cookie)

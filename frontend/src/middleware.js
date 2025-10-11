@@ -23,12 +23,11 @@ export async function middleware(req) {
       credentials: "include",
     });
 
-    console.log("Response status:", response.status);
-
     const data = await response.json();
     // console.log("Data จาก backend:", data);
 
     const isLogin = data.isLogin;
+    console.log(isLogin)
 
     if (!isLogin) {
       console.log("ยังไม่ได้ login → redirect /auth");
@@ -41,10 +40,10 @@ export async function middleware(req) {
       return NextResponse.redirect(new URL("/auth", req.url))
     }
 
-    // Check for Admin role on profile pages
-    if (pathname.startsWith('/profile') && data.userData?.role === 'Admin') {
-      console.log("Admin user on /profile → redirecting to /admin");
-      return NextResponse.redirect(new URL('/admin/users', req.url));
+    // กัน user เข้าหน้า admin
+    if (pathname.startsWith('/admin') && data.userData?.role === "User") {
+      console.log("Admin user on /admin → redirecting to /");
+      return NextResponse.redirect(new URL('/', req.url));
     }
 
     console.log("Login แล้ว ผ่าน middleware ได้");
@@ -59,5 +58,3 @@ export async function middleware(req) {
 export const config = {
   matcher: ["/", "/profile/:path*", "/about-us/:path*", "/donate/:path*", "/admin/:path*", "/pets/:path*"],
 };
-
-

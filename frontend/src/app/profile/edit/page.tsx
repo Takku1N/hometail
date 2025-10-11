@@ -47,6 +47,7 @@ export default function EditProfilePage() {
     formData.append("first_name", firstName)
     formData.append("last_name", lastName)
     formData.append("phone_number", phone)
+    formData.append("email", email)
     const sendData = async () => {
         const base_api = process.env.NEXT_PUBLIC_API_URL
         const response = await axios.put(`${base_api}/user/editprofile`, formData, {withCredentials: true})
@@ -86,7 +87,6 @@ export default function EditProfilePage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
-      {JSON.stringify(currentFile)}
       
       <div className="mx-auto max-w-6xl px-4 py-8">
         <div className="rounded-3xl bg-white shadow p-6 md:p-10">
@@ -123,7 +123,6 @@ export default function EditProfilePage() {
                 >
                     Change picture
                 </button>
-                <button type="button" className="rounded-lg bg-red-200 hover:bg-red-300 px-4 py-2 text-sm">Delete picture</button>
               </div>
             </div>
 

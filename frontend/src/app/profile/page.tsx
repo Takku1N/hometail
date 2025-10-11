@@ -68,8 +68,6 @@ export default async function ProfilePage() {
           <hr className="my-4 border-gray-300"/>
 
           {/* Sample request card */}
-          {/* {JSON.stringify(userData.user_profile)} */}
-          {/* {JSON.stringify(allRequest[0])} */}
           {allRequest.map((req:RequestInterface) => (
             <MyRequestCard req={req} key={req.id}/>
           ))}

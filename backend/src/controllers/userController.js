@@ -85,7 +85,13 @@ exports.deleteUser = async (req, res) => {
             });
         });
 
-        return res.status(200).json({ message: `User with ID ${userId} has been deleted successfully.` });
+        res.clearCookie("loginToken", {
+            httpOnly: true,
+            sameSite: "strict",
+            path: "/"
+        })
+
+        return res.redirect("/auth");
     } catch (error){
         res.status(500).json({ message: error.message });
     }
@@ -159,6 +165,7 @@ exports.updateMyProfile = async (req, res) => {
                     email: req.body.email
                 }
             })
+            console.log(req.body.email)
 
             const updateUserProfile = await prisma.userProfile.update({
                 where: {
@@ -171,6 +178,7 @@ exports.updateMyProfile = async (req, res) => {
                     image_url: image_url
                 }
             })
+            console.log(updateUserProfile)
 
             return { updateUser, updateUserProfile }
         })

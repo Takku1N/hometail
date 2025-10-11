@@ -89,7 +89,6 @@ export default function PetListingFormPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
-      {JSON.stringify(currentFile)}
       <div className="mx-auto max-w-5xl px-4 py-8">
         <div className="rounded-3xl bg-white shadow p-6 md:p-10">
           <h1 className="text-4xl font-extrabold text-center">Pet Listing Form</h1>

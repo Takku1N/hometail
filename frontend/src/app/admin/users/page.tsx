@@ -14,18 +14,12 @@ export default function AdminUsersPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | UserStatus>("ALL");
 
-  const [users, setUsers] = useState<UserInterface[]>([
-    // { id: "1", name: "Sophia Carter", role: "Owner", email: "sophia.carter@email.com", joinDate: "2023-01-15", status: "Active" },
-    // { id: "2", name: "Ethan Bennett", role: "Adopter", email: "ethan.bennett@email.com", joinDate: "2022-11-20", status: "Active" },
-    // { id: "3", name: "Olivia Hayes", role: "Owner", email: "olivia.hayes@email.com", joinDate: "2023-03-05", status: "Pending" },
-    // { id: "4", name: "Liam Foster", role: "Adopter", email: "liam.foster@email.com", joinDate: "2022-09-10", status: "Active" },
-    // { id: "5", name: "Ava Morgan", role: "Owner", email: "ava.morgan@email.com", joinDate: "2023-05-22", status: "Active" },
-  ]);
+  const [users, setUsers] = useState<UserInterface[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       const allUser = await fetchData('/user');
-      setUsers(allUser)
+      setUsers(allUser);
     }
 
     fetchUsers();
@@ -142,7 +136,12 @@ export default function AdminUsersPage() {
                   <tr key={u.id} className="odd:bg-white even:bg-pink-50/40">
                     <td className="px-4 py-3">{u.user_profile?.first_name || ""} {u.user_profile?.last_name || ""}</td>
                     <td className="px-4 py-3">{u.email}</td>
-                    <td className="px-4 py-3">{u.createdAt}</td>
+                    <td className="px-4 py-3">{u.createdAt ? new Intl.DateTimeFormat('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      }).format(new Date(u.createdAt)) : 'N/A'}
+                    </td>
                     <td className="px-4 py-3">
                       {u.status && <span className="text-green-600">Active</span>}
                       {u.status == false && <span className="text-yellow-700">Pending</span>}

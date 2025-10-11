@@ -47,7 +47,7 @@ export default function AuthPage() {
 
   const signUp = async () => {
     try {
-      const response = await axios.post(`${apiUrl}/signup`, {
+      const response = await axios.post(`${apiUrl}/auth/signup`, {
         email: email,
         password: password,
         first_name: firstName,

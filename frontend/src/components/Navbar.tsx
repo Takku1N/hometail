@@ -5,6 +5,8 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { redirect, usePathname } from "next/navigation";
 import axios from "axios";
+import fetchData from "@/app/fetchData";
+import { userAgent } from "next/server";
 interface NavbarProps {
   onSearchChange?: (value: string) => void;
 }
@@ -62,13 +64,26 @@ export default function Navbar({ onSearchChange }: NavbarProps) {
 function ProfileMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
       if (!ref.current) return;
       if (!ref.current.contains(e.target as Node)) setOpen(false);
     }
+    const fetchUser = async () => {
+      try {
+        const response = await fetchData("/auth/myprofile");
+        if (response.userData.role === "Admin") {
+          setIsAdmin(true);
+        }
+      } catch (err) {
+        console.log(err)
+      }
+      
+    }
     document.addEventListener("click", onClickOutside);
+    fetchUser();
     return () => document.removeEventListener("click", onClickOutside);
   }, []);
 
@@ -96,10 +111,18 @@ function ProfileMenu() {
             href="/profile"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
             role="menuitem"
-            onClick={() => setOpen(false)}
           >
             My profile
           </Link>
+          {isAdmin && (
+            <Link
+              href="/admin/users"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              role="menuitem"
+            >
+              Admin
+            </Link>
+          ) }
           <button
             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 cursor-pointer"
             role="menuitem"
