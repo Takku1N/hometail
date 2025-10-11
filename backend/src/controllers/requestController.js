@@ -59,7 +59,7 @@ exports.approveRequest = async (req, res) => {
             return { updatedRequest, updatePetProfile };
        })
 
-        res.status(200).json(updatedRequest);
+        res.status(200).json(result);
     } catch (error){
         res.status(500).json({ error: error.message });
     }
@@ -90,7 +90,7 @@ exports.rejectRequest = async (req, res) => {
             return { updatedRequest, updatePetProfile };
        })
 
-        res.status(200).json(updatedRequest);
+        res.status(200).json(result);
     } catch (error){
         res.status(500).json({ error: error.message });
     }
@@ -117,6 +117,18 @@ exports.getMyRequest = async (req, res) => {
         const requests = await prisma.request.findMany({
             where: {
                 requester_id: Number(requester_id)
+            },
+            include: {
+                pet: {
+                    include: {
+                        profile: true,
+                        owner: {
+                            include: {
+                                user_profile: true
+                            }
+                        }
+                    }
+                }
             }
         })
         res.status(200).json(requests);
