@@ -25,7 +25,7 @@ export default function EditProfilePage() {
   useEffect(() => {
     const myUser = async () => {
         const base_api = process.env.NEXT_PUBLIC_API_URL
-        const response = await axios.get(`${base_api}/myprofile` , {withCredentials: true})
+        const response = await axios.get(`${base_api}/auth/myprofile` , {withCredentials: true})
         setFirstName(response.data.userData.user_profile.first_name)
         setLastName(response.data.userData.user_profile.last_name)
         setEmail(response.data.userData.email)

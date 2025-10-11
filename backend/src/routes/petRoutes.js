@@ -19,7 +19,7 @@ router.get('/pet/unadopted', authenticateToken, petController.getUnAdoptedPet);
 router.post('/pet', authenticateToken, upload.single('image'), petController.createPet);
 
 router.get('/pet/:id', authenticateToken, petController.getPetById);
-router.put('/pet/:id', authenticateToken, isPetOwner,  petController.updatePet);
+router.put('/pet/:id', authenticateToken, isPetOwner, upload.single('image'), petController.updatePet);
 router.delete('/pet/:id', authenticateToken, isPetOwner, petController.deletePet);
 
 

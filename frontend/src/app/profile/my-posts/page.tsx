@@ -6,11 +6,35 @@ import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import { useRouter } from "next/navigation";
+
 import { PetInterface, PetProfileInterface } from "@/interface";
 
 export default function MyPostsPage() {
-
+  const [allActive, setAllActive] = useState<boolean>(true)
+  const [availableActive, setAvailableActive] = useState<boolean>(false)
+  const [adoptedActive, setAdoptedActive] = useState<boolean>(false)
   const [allPet, setAllPet] = useState<PetInterface[]>([])
+  const [displayPet, setDisplayPet] = useState<PetInterface[]>([])
+
+  const openAll = () => {
+    setAllActive(true)
+    setAdoptedActive(false)
+    setAvailableActive(false)
+  }
+
+  const openAvailable = () => {
+    setAllActive(false)
+    setAdoptedActive(false)
+    setAvailableActive(true)
+  }
+
+  const openAdopted = () => {
+    setAllActive(false)
+    setAdoptedActive(true)
+    setAvailableActive(false)
+  }
+
   useEffect(() => {
       const fetchPet = async () => {
         const base_api = process.env.NEXT_PUBLIC_API_URL
@@ -19,11 +43,22 @@ export default function MyPostsPage() {
       }
       fetchPet()
   }, [])
+
+  useEffect(() => {
+    if (allActive){
+      setDisplayPet(allPet)
+    }
+    if (availableActive){
+      setDisplayPet(allPet.filter((pet) => pet.profile.adopted === false))
+    }
+    if (adoptedActive){
+      setDisplayPet(allPet.filter((pet) => pet.profile.adopted === true))
+    }
+  }, [allActive, availableActive, adoptedActive, allPet])
   
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
-      {JSON.stringify(allPet)}
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-extrabold">My Posts</h1>
@@ -35,16 +70,18 @@ export default function MyPostsPage() {
 
         {/* Filters */}
         <div className="mt-4 flex items-center gap-3">
-          <button className="px-3 text-green-500 bg-green-100 rounded-lg"> All </button>
-          <Chip>Available</Chip>
-          <Chip>Adopted</Chip>
+          <button className={`${allActive ? "px-3 text-green-500 bg-green-100 rounded-lg" : "px-3 text-red-500 bg-red-100 rounded-lg"}`} onClick={openAll}> All </button>
+          <button className={`${availableActive ? "px-3 text-green-500 bg-green-100 rounded-lg" : "px-3 text-red-500 bg-red-100 rounded-lg"}`} onClick={openAvailable}> Available </button>
+          <button className={`${adoptedActive ? "px-3 text-green-500 bg-green-100 rounded-lg" : "px-3 text-red-500 bg-red-100 rounded-lg"}`} onClick={openAdopted}> Adopted </button>
+          
         </div>
 
         {/* Post cards */}
         <div className="mt-6 space-y-6">
 
-          {allPet.map((pet) => (
+          {displayPet.map((pet) => (
             <PostCard
+            id = {pet.id}
             image={pet.profile.image_url}
             title={pet.profile.name}
             location={pet.profile.location}
@@ -64,17 +101,10 @@ export default function MyPostsPage() {
   );
 }
 
-function Chip({ children, active = false }: { children: React.ReactNode; active?: boolean }) {
-  return (
-    <span
-      className={`${active ? "bg-green-200 text-green-800" : "bg-gray-100 text-gray-700"} rounded-full px-3 py-1 text-sm font-semibold`}
-    >
-      {children}
-    </span>
-  );
-}
+
 
 function PostCard({
+  id,
   image,
   title,
   location,
@@ -84,6 +114,7 @@ function PostCard({
   gender,
   breed,
 }: {
+  id: number
   image: string;
   title: string;
   location: string;
@@ -93,6 +124,12 @@ function PostCard({
   gender: string
   breed: string
 }) {
+  const router= useRouter()
+  const deletePet = async (pet_id:number) => {
+    const base_api = process.env.NEXT_PUBLIC_API_URL
+    await axios.delete(`${base_api}/pet/${pet_id}`, {withCredentials: true})
+    window.location.href = '/profile/my-posts'
+  }
   return (
     <div
       className={`w-full rounded-2xl bg-white shadow border overflow-hidden flex items-stretch `}
@@ -107,16 +144,16 @@ function PostCard({
           <h2 className="text-lg text-green-500"> Adopted </h2>
         ): null}
         <h3 className="mt-1 text-xl font-extrabold">🐶 {title}</h3>
-        <div className="text-sm text-gray-800">{age} ปี- {gender} - {breed} </div>
+        <div className="text-sm text-gray-800">{age} ขวบ 🫶 {gender} - {breed} </div>
         <div className="text-sm text-gray-700 mt-1">📍 {location}</div>
         <p className="text-sm text-gray-600 mt-1">{desc}</p>
 
         <div className="mt-3 flex items-center gap-3">
-          <button className="flex items-center gap-2 rounded-full bg-green-200 px-4 py-2 text-gray-900 cursor-pointer">
+          <a className="flex items-center gap-2 rounded-full bg-green-200 px-4 py-2 text-gray-900 cursor-pointer" href={`/profile/my-posts/edit/${id}`}>
             <span>✏️</span>
             <span>Edit</span>
-          </button>
-          <button className="rounded-full bg-red-200 px-4 py-2 text-gray-900 cursor-pointer">Delete</button>
+          </a>
+          <button className="rounded-full bg-red-200 px-4 py-2 text-gray-900 cursor-pointer" onClick={() => {deletePet(id)}}>Delete</button>
         </div>
       </div>
     </div>

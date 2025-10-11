@@ -2,9 +2,11 @@
 
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 
 import axios from "axios";
+import { PetInterface, PetProfileInterface } from "@/interface";
 
 export default function PetListingFormPage() {
   const router = useRouter();
@@ -21,6 +23,29 @@ export default function PetListingFormPage() {
   const [medicalNotes, setMedicalNotes] = useState<string>("");
   const [personality, setPersonality] = useState<string>("");
   const [currentFile, setCurrentFile] = useState<File | null>(null)
+  const [petData, setPetData] = useState<PetProfileInterface[]>([])
+  const params = useParams()
+  const pet_id = params.id
+
+  useEffect(() => {
+    const getPet = async () => {
+      const base_api = process.env.NEXT_PUBLIC_API_URL
+      const response = await axios.get(`${base_api}/pet/${pet_id}`, {withCredentials: true})
+      setPetData(response.data)
+      setName(response.data.name)
+      setAge(response.data.age)
+      setGender(response.data.gender)
+      setBreed(response.data.breed)
+      setSpecies(response.data.species)
+      setLocation(response.data.location)
+      setVaccinations(response.data.vaccinated)
+      setNeutered(response.data.neutered)
+      setMedicalNotes(response.data.medical_note)
+      setPersonality(response.data.description)
+      setImagePreview(response.data.image_url)
+    }
+    getPet()
+  }, [])
 
   // image
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -57,6 +82,7 @@ export default function PetListingFormPage() {
       personality,
       
     });
+
     const formData = new FormData()
     if (currentFile){
       formData.append("image", currentFile)
@@ -72,14 +98,14 @@ export default function PetListingFormPage() {
     formData.append("neutered", neutered === true ? "true" : "false")
     formData.append("species", species)
     
-    const createPet = async () => {
+    const updatePet = async () => {
       const base_api = process.env.NEXT_PUBLIC_API_URL
-      const response = await axios.post(`${base_api}/pet`, formData, {withCredentials: true})
+      const response = await axios.put(`${base_api}/pet/${pet_id}`, formData, {withCredentials: true})
       console.log(response.data)
       router.push("/profile/my-posts");
     }
     try{
-      createPet()
+      updatePet()
     } catch (error){
       console.error(error)
     }
@@ -90,9 +116,10 @@ export default function PetListingFormPage() {
     <main className="min-h-screen bg-gray-50">
       <Navbar />
       {JSON.stringify(currentFile)}
+      {/* {JSON.stringify(petData)} */}
       <div className="mx-auto max-w-5xl px-4 py-8">
         <div className="rounded-3xl bg-white shadow p-6 md:p-10">
-          <h1 className="text-4xl font-extrabold text-center">Pet Listing Form</h1>
+          <h1 className="text-4xl font-extrabold text-center">Edit Pet Form {pet_id}</h1>
 
           <form onSubmit={onSubmit} className="mt-8 space-y-10">
             {/* Basic Info */}

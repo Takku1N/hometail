@@ -52,9 +52,9 @@ export default function PetCard({ pet }: PetCardProps) {
           <span> • {pet.gender} • {pet.breed}</span>
         </div>
         <div className="mt-1 text-sm text-gray-600">📍 {pet.location}</div>
-        <button className="mt-3 block mx-auto rounded-full bg-[#81C784] hover:bg-[#6FBF73] text-white px-5 py-2 text-sm shadow">
+        <a className="mt-3 block mx-auto rounded-full bg-[#81C784] hover:bg-[#6FBF73] text-white px-5 py-2 text-sm shadow cursor-pointer text-center" href={`/pets/${pet.pet.id}`}>
           Adopt Me 🐾
-        </button>
+        </a>
       </div>
     </div>
   );

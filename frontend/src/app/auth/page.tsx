@@ -25,7 +25,7 @@ export default function AuthPage() {
   // API Func
   const signIn = async () => {
     try {
-      const response = await axios.post(`${apiUrl}/signin`, {
+      const response = await axios.post(`${apiUrl}/auth/signin`, {
         email: email, password: password
       }, {
         headers: { "Content-Type": "application/json" },
