@@ -44,7 +44,7 @@ export default function PetCard({ pet }: PetCardProps) {
         {/* <img src={pet.image_url} alt="" /> */}
       </div>
       <div className="p-4">
-        <Link href={`/pet/${pet.pet_id}`} className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:underline">
+        <Link href={`/pets/${pet.pet_id}`} className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:underline">
           <span>{pet.name}</span>
         </Link>
         <div className="mt-1 text-sm text-gray-700">
