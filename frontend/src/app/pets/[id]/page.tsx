@@ -109,14 +109,14 @@ export default function PetDetailPage() {
           {/* Footer Actions */}
           <div className="mt-8 flex flex-col md:flex-row items-center gap-4">
             <div className="flex items-center gap-3">
-              <Image
+              {/* <Image
                 src="/images/hometail_signin.png"
                 alt="owner"
                 width={50}
                 height={50}
                 className="rounded-full border"
               />
-              <span className="font-medium text-gray-800">เจ้าของ</span>
+              <span className="font-medium text-gray-800">เจ้าของ</span> */}
             </div>
             <div className="flex gap-3 mt-4 md:mt-0">
               {/* <button className="px-6 py-2 rounded-full border border-gray-300 shadow hover:bg-gray-100 transition">
