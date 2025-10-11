@@ -29,8 +29,8 @@ model User {
 }
 
 model UserProfile {
-  user_id       Int           @id @default(autoincrement())
-  user          User          @relation(fields: [user_id], references: [id])
+  user_id       Int           @id
+  user          User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
   first_name    String
   last_name     String
   phone_number  String
@@ -41,10 +41,10 @@ model UserProfile {
 model Pet {
   id            Int           @id @default(autoincrement())
   owner_id      Int
-  owner         User          @relation("owner_pet" ,fields: [owner_id], references: [id])
+  owner         User          @relation("owner_pet" ,fields: [owner_id], references: [id], onDelete: Cascade)
   // annoucer_id   Int?
   // annoucer      User?         @relation("announcer_pet", fields: [annoucer_id], references: [id])
-  image_url     String
+  
   profile       PetProfile?
   requests      Request[]     @relation("pet")
 }
@@ -52,7 +52,7 @@ model Pet {
 
 model PetProfile {
   pet_id        Int           @id
-  pet           Pet           @relation(fields: [pet_id], references: [id])
+  pet           Pet           @relation(fields: [pet_id], references: [id], onDelete: Cascade)
   name          String
   age           Int
   gender        String
@@ -64,14 +64,15 @@ model PetProfile {
   medical_note  String?
   species      PetType
   adopted       Boolean       @default(false)
+  image_url     String?
 }
 
 model Request {
   id Int @id @default(autoincrement())
   requester_id Int
-  requester   User      @relation("requester",fields: [requester_id], references: [id])
+  requester   User      @relation("requester",fields: [requester_id], references: [id], onDelete: Cascade)
   pet_id       Int
-  pet         Pet       @relation("pet", fields: [pet_id], references: [id])
+  pet         Pet       @relation("pet", fields: [pet_id], references: [id], onDelete: Cascade)
   status RequestStatus @default(Pending)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

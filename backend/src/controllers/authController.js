@@ -12,6 +12,7 @@ const bcrypt = require("bcrypt");
 exports.getMyProfile = async (req, res) => {
     try {
         const token = req.cookies.loginToken;
+        
         if (!token){
             return res.json({
                 userData: null,
@@ -30,6 +31,7 @@ exports.getMyProfile = async (req, res) => {
             }
         })
 
+        console.log("กำลังส่ง res ให้ frontend middleware")
         return res.json({
             userData: userData,
             isLogin: true
@@ -70,6 +72,7 @@ exports.signInUser = async (req, res) => {
             sameSite: "strict"
         })
 
+        console.log("เข้าสู่ระบบสำเร็จ")
         return res.status(200).json({message: "เข้าสู่ระบบสำเร็จ"})
 
     } catch (err) {

@@ -48,11 +48,13 @@ const isPetOwner = async (req, res, next) => {
             }
         })
 
+        const user = await prisma.user.findUnique({where: {id: Number(user_id)}})
+
         if (!pet){
             return res.status(404).json({ message: "ไม่พบสัตว์เลี้ยงนี้" });
         }
 
-        if (pet.owner_id !== user_id){
+        if (pet.owner_id !== user_id && user.role === "User"){
             return res.status(403).json({ message: "คุณไม่ใช่เจ้าของสัตว์เลี้ยง" });
         }
         

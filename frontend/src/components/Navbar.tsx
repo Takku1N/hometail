@@ -5,6 +5,8 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { redirect, usePathname } from "next/navigation";
 import axios from "axios";
+import fetchData from "@/app/fetchData";
+import { userAgent } from "next/server";
 interface NavbarProps {
   onSearchChange?: (value: string) => void;
 }
@@ -24,7 +26,7 @@ export default function Navbar({ onSearchChange }: NavbarProps) {
         <div className="mx-auto max-w-7xl px-4 py-3 grid grid-cols-[auto_1fr_auto_auto] items-center gap-4">
           {/* Logo bigger */}
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/images/hometail_icon.png" alt="HomeTail" width={96} height={96} className="w-12 h-12 md:w-16 md:h-16 lg:w-24 lg:h-24" />
+            <img src="/images/hometail_icon.png" alt="HomeTail" width={96} height={96} className="w-12 h-12 md:w-16 md:h-16 lg:w-24 lg:h-24" />
           </Link>
 
           <div />
@@ -62,19 +64,32 @@ export default function Navbar({ onSearchChange }: NavbarProps) {
 function ProfileMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
       if (!ref.current) return;
       if (!ref.current.contains(e.target as Node)) setOpen(false);
     }
+    const fetchUser = async () => {
+      try {
+        const response = await fetchData("/auth/myprofile");
+        if (response.userData.role === "Admin") {
+          setIsAdmin(true);
+        }
+      } catch (err) {
+        console.log(err)
+      }
+      
+    }
     document.addEventListener("click", onClickOutside);
+    fetchUser();
     return () => document.removeEventListener("click", onClickOutside);
   }, []);
 
   const signout = async () => {
     const base_api = process.env.NEXT_PUBLIC_API_URL
-    await axios.get(`${base_api}/signout`, {withCredentials:true})
+    await axios.get(`${base_api}/auth/signout`, {withCredentials:true})
     redirect('/auth')
   }
   return (
@@ -85,7 +100,7 @@ function ProfileMenu() {
         aria-expanded={open}
         className="rounded-full border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300 cursor-pointer"
       >
-        <Image src="/images/hometail_signin.png" alt="Profile" width={40} height={40} className="rounded-full" />
+        <img src="/images/hometail_signin.png" alt="Profile" width={40} height={40} className="rounded-full" />
       </button>
       {open && (
         <div
@@ -96,10 +111,18 @@ function ProfileMenu() {
             href="/profile"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
             role="menuitem"
-            onClick={() => setOpen(false)}
           >
             My profile
           </Link>
+          {isAdmin && (
+            <Link
+              href="/admin/users"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              role="menuitem"
+            >
+              Admin
+            </Link>
+          ) }
           <button
             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 cursor-pointer"
             role="menuitem"
